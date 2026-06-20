@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SPB - Smart Placement Bureau: Complete Code Documentation</title>
+<style>
+  @page { size: A4; margin: 2cm; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; line-height: 1.6; }
+  h1 { color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 10px; }
+  h2 { color: #764ba2; border-bottom: 2px solid #764ba2; padding-bottom: 5px; margin-top: 30px; }
+  h3 { color: #f093fb; margin-top: 20px; }
+  .cover { text-align: center; padding: 100px 0; }
+  .cover h1 { font-size: 36px; border: none; }
+  .cover p { font-size: 18px; color: #555; }
+  .section { page-break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+  th { background: #667eea; color: white; }
+  tr:nth-child(even) { background: #f5f5ff; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+  pre { background: #1a1a2e; color: #e0e0e0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+  .frontend { background: #e3f2fd; color: #1565c0; }
+  .backend { background: #fce4ec; color: #c62828; }
+  .ai { background: #e8f5e9; color: #2e7d32; }
+  .infra { background: #fff3e0; color: #e65100; }
+  .diagram { background: #f8f9ff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 15px 0; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+  <h1>Smart Placement Bureau (SPB)</h1>
+  <p><strong>Final Year Project - Complete Code Documentation</strong></p>
+  <p style="font-size:14px;color:#888;">AI-Powered Job Placement &amp; Recruitment System</p>
+  <hr style="width:50%;margin:30px auto;">
+  <p style="font-size:14px;"><strong>Frontend:</strong> Android (Jetpack Compose) + Web (HTML/JS)</p>
+  <p style="font-size:14px;"><strong>Backend:</strong> Firebase (Auth, Firestore, Storage, FCM) + Python NLP</p>
+  <p style="font-size:14px;"><strong>AI Models:</strong> Google Gemini + spaCy NER (en_core_web_lg) + BERT (all-MiniLM-L6-v2)</p>
+  <p style="font-size:14px;margin-top:40px;color:#999;">Generated: June 2026</p>
+</div>
+
+<div style="page-break-before:always;"></div>
+
+<!-- ===== TABLE OF CONTENTS ===== -->
+<h1>Table of Contents</h1>
+<ol>
+  <li>Project Architecture Overview</li>
+  <li>Tech Stack &amp; Dependencies</li>
+  <li>Frontend: Android (Kotlin + Jetpack Compose)</li>
+  <li>Backend: Firebase Services</li>
+  <li>AI Integration: Gemini AI Service</li>
+  <li>CV Parsing &amp; Skill Matching</li>
+  <li>Python NLP Backend (Standalone)</li>
+  <li>Database Schema (Firestore)</li>
+  <li>Navigation Flow</li>
+  <li>Complete File Listing</li>
+</ol>
+
+<div style="page-break-before:always;"></div>
+
+<!-- ===== 1. ARCHITECTURE ===== -->
+<h1>1. Project Architecture Overview</h1>
+
+<div class="diagram">
+<pre style="background:transparent;color:#1a1a2e;font-size:13px;text-align:left;">
+┌─────────────────────────────────────────────────────┐
+│                   SPB SYSTEM                         │
+├─────────────────────────────────────────────────────┤
+│                                                       │
+│  ┌─────────────────────┐  ┌──────────────────────┐  │
+│  │   ANDROID APP       │  │   WEB DASHBOARD      │  │
+│  │  (Jetpack Compose)  │  │   (HTML/CSS/JS)      │  │
+│  │  - Student Module   │  │   - Company Portal   │  │
+│  │  - Company Module   │  │   - Admin Panel      │  │
+│  └────────┬────────────┘  └──────────┬───────────┘  │
+│           │                           │              │
+│           └──────────┬────────────────┘              │
+│                      │                               │
+│  ┌───────────────────▼──────────────────────────┐    │
+│  │           FIREBASE BACKEND                    │    │
+│  │  ┌──────┐  ┌─────────┐  ┌───────┐  ┌──────┐ │    │
+│  │  │ Auth │  │Firestore│  │Storage│  │ FCM  │ │    │
+│  │  └──────┘  └─────────┘  └───────┘  └──────┘ │    │
+│  └──────────────────────┬───────────────────────┘    │
+│                         │                             │
+│  ┌──────────────────────▼───────────────────────┐    │
+│  │         AI / NLP ENGINE                       │    │
+│  │  ┌─────────────┐  ┌──────────────────────┐   │    │
+│  │  │Google Gemini │  │ Python NLP Backend   │   │    │
+│  │  │  (Vision +   │  │ (CV Parsing, Semantic│   │    │
+│  │  │   Text AI)   │  │  Matching, Shortlist,│   │    │
+│  │  │             │  │  Recommendations)     │   │    │
+│  │  └─────────────┘  └──────────────────────┘   │    │
+│  └──────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────┘
+</pre>
+</div>
+
+<p><strong>Key Design Decisions:</strong></p>
+<ul>
+  <li><strong>Android Frontend:</strong> Kotlin + Jetpack Compose for modern declarative UI</li>
+  <li><strong>Firebase Backend:</strong> Serverless architecture - no custom server needed</li>
+  <li><strong>AI via Gemini:</strong> Google's Gemini 2.5 Flash for CV parsing, skill matching, interview scoring, MCQ generation</li>
+  <li><strong>Python NLP:</strong> Standalone module for offline/alternative processing using sentence embeddings</li>
+  <li><strong>Real-time:</strong> Firestore listeners for live updates on applications, notifications</li>
+</ul>
+
+<div style="page-break-before:always;"></div>
+
+<!-- ===== 2. TECH STACK ===== -->
+<h1>2. Tech Stack &amp; Dependencies</h1>
+
+<h2>Android App (app/build.gradle.kts)</h2>
+<table>
+  <tr><th>Category</th><th>Technology</th><th>Version</th></tr>
+  <tr><td>Language</td><td>Kotlin</td><td>1.9+</td></tr>
+  <tr><td>UI Framework</td><td>Jetpack Compose + Material 3</td><td>BOM 2024+</td></tr>
+  <tr><td>Navigation</td><td>Navigation Compose</td><td>2.7.7</td></tr>
+  <tr><td>Architecture</td><td>MVVM (ViewModel + StateFlow)</td><td>-</td></tr>
+  <tr><td>Authentication</td><td>Firebase Auth</td><td>22.3.1</td></tr>
+  <tr><td>Database</td><td>Firebase Firestore</td><td>25.1.1</td></tr>
+  <tr><td>Storage</td><td>Firebase Storage</td><td>21.0.1</td></tr>
+  <tr><td>Push Notifications</td><td>Firebase Cloud Messaging (FCM)</td><td>23.4.1</td></tr>
+  <tr><td>AI</td><td>Google Gemini AI SDK</td><td>0.9.0</td></tr>
+  <tr><td>PDF Processing</td><td>PDFBox Android</td><td>2.0.27</td></tr>
+  <tr><td>Image Loading</td><td>Coil</td><td>2.5.0</td></tr>
+  <tr><td>JSON</td><td>Gson</td><td>2.10.1</td></tr>
+  <tr><td>Async</td><td>Kotlin Coroutines</td><td>1.7.3</td></tr>
+  <tr><td>Crash Reporting</td><td>Firebase Crashlytics</td><td>18.6.1</td></tr>
+  <tr><td>Performance</td><td>Firebase Performance</td><td>20.5.2</td></tr>
+</table>
+
+<h2>Python NLP Backend (python_backend/requirements.txt)</h2>
+<table>
+  <tr><th>Category</th><th>Library / Model</th><th>Purpose</th></tr>
+  <tr><td>PDF Text Extraction</td><td>pdfminer.six, PyPDF2</td><td>Extract text from PDF resumes</td></tr>
+  <tr><td>NER (Entity Recognition)</td><td>spaCy (en_core_web_lg)</td><td>Extract PERSON, ORG, PRODUCT entities from CVs</td></tr>
+  <tr><td>Semantic Embeddings</td><td>sentence-transformers (all-MiniLM-L6-v2)</td><td>BERT-based dense vector embeddings for semantic matching</td></tr>
+  <tr><td>Cosine Similarity</td><td>scikit-learn + numpy</td><td>Compute similarity between CV and job vectors</td></tr>
+  <tr><td>Text Processing</td><td>nltk, regex</td><td>NLP preprocessing &amp; pattern matching</td></tr>
+  <tr><td>Data Handling</td><td>pandas</td><td>Data analysis</td></tr>
+  <tr><td>API (optional)</td><td>FastAPI + uvicorn</td><td>REST API microservice</td></tr>
+</table>
+
+<div style="page-break-before:always;"></div>
+
+<!-- ===== 3. FRONTEND ===== -->
+<h1>3. Frontend: Android App Architecture</h1>
+
+<h2>Package Structure</h2>
+<pre>
+com.example.spb/
+├── MainActivity.kt              # Entry point, notification handling
+├── navigation/
+│   ├── NavGraph.kt              # All screen routes
+│   └── Screen.kt                # Route definitions
+├── ui/
+│   ├── theme/                   # Color, Type, Theme
+│   ├── components/              # Reusable UI (Glassmorphism, Animations)
+│   └── screens/
+│       ├── auth/                # Login, Register, UserTypeSelection
+│       ├── splash/              # Splash Screen
+│       ├── welcome/             # Welcome Screen
+│       ├── student/             # Student Dashboard, Jobs, Applications, etc.
+│       ├── company/             # Company Dashboard, Post Job, Analytics
+│       └── info/                # Team Screen
+├── data/
+│   ├── model/                   # Student, Job, Application, etc.
+│   └── repository/              # Auth, Job, Application, Storage repos
+├── ai/
+│   ├── GeminiAIService.kt       # All Gemini API calls
+│   ├── CVParsingService.kt      # PDF → Image → Gemini Vision
+│   └── AISkillMatchingService.kt # Skill matching + recommendations
+└── utils/
+    ├── FileUploadService.kt     # Resume upload & text extraction
+    ├── NetworkConnectivityObserver.kt
+    ├── NotificationService.kt
+    ├── FirebaseConfig.kt
+    ├── ProductionConfig.kt
+    └── DateUtils.kt
+</pre>
+
+<h2>MVVM Architecture Pattern</h2>
+<table>
+  <tr><th>ViewModel</th><th>Used By Screen</th><th>Key Functions</th></tr>
+  <tr><td>AuthViewModel</td><td>Login, Register</td><td>Login, Register, Reset Password</td></tr>
+  <tr><td>StudentViewModel</td><td>Browse Jobs, Apply</td><td>loadJobs(), applyForJob(), uploadResume()</td></tr>
+  <tr><td>JobViewModel</td><td>Job Details</td><td>loadJobDetail()</td></tr>
+  <tr><td>ApplicationViewModel</td><td>My Applications</td><td>loadMyApplications()</td></tr>
+  <tr><td>SkillMatchingViewModel</td><td>Skill Matching Screen</td><td>getSkillMatches(), analyzeStudentSkills(), getLearningRecommendations()</td></tr>
+  <tr><td>DashboardViewModel</td><td>Student/Company Dashboard</td><td>loadStudentDashboard(), loadCompanyDashboard()</td></tr>
+  <tr><td>CompanyViewModel</td><td>Company Dashboard</td><td>createJob(), manage applications</td></tr>
+  <tr><td>NotificationViewModel</td><td>Notifications</td><td>loadNotifications()</td></tr>
+  <tr><td>ProfileViewModel</td><td>Student Profile</td><td>updateProfile()</td></tr>
+</table>
+
+<div style="page-break-before:always;"></div>
+
+<h2>Navigation Routes (Screen.kt)</h2>
+<table>
+  <tr><th>Route</th><th>Screen</th><th>User Type</th></tr>
+  <tr><td>splash</td><td>Splash</td><td>Both</td></tr>
+  <tr><td>welcome</td><td>Welcome</td><td>Both</td></tr>
+  <tr><td>user_type_selection</td><td>Select User Type</td><td>Both</td></tr>
+  <tr><td>student_register / student_login</td><td>Student Auth</td><td>Student</td></tr>
+  <tr><td>company_register / company_login</td><td>Company Auth</td><td>Company</td></tr>
+  <tr><td>student_dashboard</td><td>Student Dashboard</td><td>Student</td></tr>
+  <tr><td>company_dashboard</td><td>Company Dashboard</td><td>Company</td></tr>
+  <tr><td>browse_jobs</td><td>Browse/View Jobs</td><td>Student</td></tr>
+  <tr><td>job_details/{jobId}</td><td>Job Details</td><td>Student</td></tr>
+  <tr><td>my_applications</td><td>My Applications</td><td>Student</td></tr>
+  <tr><td>interview/{jobId}</td><td>AI Interview</td><td>Student</td></tr>
+  <tr><td>assessment/{jobId}</td><td>MCQ Assessment</td><td>Student</td></tr>
+  <tr><td>view_applications/{jobId}</td><td>View Applicants</td><td>Company</td></tr>
+  <tr><td>application_details/{id}</td><td>Applicant Detail</td><td>Company</td></tr>
+  <tr><td>schedule_interview/{id}</td><td>Schedule Interview</td><td>Company</td></tr>
+  <tr><td>analytics</td><td>Analytics Dashboard</td><td>Company</td></tr>
+  <tr><td>post_job</td><td>Post New Job</td><td>Company</td></tr>
+  <tr><td>manage_jobs</td><td>Manage Jobs</td><td>Company</td></tr>
+</table>
+
+<div style="page-break-before:always;"></div>
+
+<!-- ===== 4. BACKEND ===== -->
+<h1>4. Backend: Firebase Services</h1>
+
+<h2>Firebase Authentication</h2>
+<p><code>com.example.spb.data.repository.AuthRepository.kt</code></p>
+<ul>
+  <li>Email/Password registration &amp; login for both Students and Companies</li>
+  <li>Firestore user profiles created on registration</li>
+  <li>Password reset support</li>
+  <li>FCM token stored for push notifications</li>
+</ul>
+
+<h2>Firestore Collections</h2>
+<table>
+  <tr><th>Collection</th><th>Document ID</th><th>Key Fields</th></tr>
+  <tr><td><code>students</code></td><td>user.uid</td><td>fullName, email, skills[], major, cgpa, cvUrl, resumeText</td></tr>
+  <tr><td><code>companies</code></td><td>user.uid</td><td>companyName, email, industry, contactPerson, verified</td></tr>
+  <tr><td><code>jobs</code></td><td>auto-ID</td><td>title, companyId, requiredSkills[], description, matchingThreshold, status</td></tr>
+  <tr><td><code>applications</code></td><td>auto-ID</td><td>jobId, studentId, matchScore, status, interviewData, cvUrl, resumeText</td></tr>
+  <tr><td><code>notifications</code></td><td>auto-ID</td><td>studentId, title, message, type, read, createdAt</td></tr>
+  <tr><td><code>pending_notifications</code></td><td>auto-ID</td><td>token, data (FCM payload)</td></tr>
+</table>
+
+<h2>Key Backend Flows</h2>
+
+<h3>Job Application Flow</h3>
+<pre>
+1. Student browses jobs → JobRepository.getAllActiveJobs()
+2. Student taps Apply → FileUploadService.uploadResume() extracts text
+3. CVParsingService.parseAndMatchCV() → Gemini AI parses PDF → CVParseResult
+4. Gemini AI matches CV vs Job → CVMatchResult (score, skills, analysis)
+5. Application saved to Firestore with matchScore
+6. Company notified → can view applicants sorted by match score
+7. Company shortlists → schedule interview → student notified via FCM
+</pre>
+
+<h3>Interview Flow</h3>
+<pre>
+1. Company schedules interview (Technical/HR/AI Behavioral/Case Study)
+2. Student receives notification → opens Interview Screen
+3. Gemini generates interview questions based on job requirements
+4. Student answers (with proctoring - tab switch detection)
+5. Gemini scores answers → InterviewScore with feedback
+6. Company sees interview results on Application Details
+</pre>
+
+<div style="page-break-before:always;"></div>
+
+<!-- ===== 5. AI INTEGRATION ===== -->
+<h1>5. AI Integration: Google Gemini</h1>
+
+<p><code>com.example.spb.ai.GeminiAIService.kt</code> — The central AI service class.</p>
+
+<table>
+  <tr><th>Method</th><th>Purpose</th><th>Gemini Capability Used</th></tr>
+  <tr><td><code>parseCVFromImages()</code></td><td>Extract structured data from CV PDF images</td><td>Vision (image understanding)</td></tr>
+  <tr><td><code>scoreInterviewAnswers()</code></td><td>Score interview Q&A (0-100) with feedback</td><td>Text generation</td></tr>
+  <tr><td><code>generateInterviewQuestions()</code></td><td>Generate job-specific interview questions</td><td>Text generation</td></tr>
+  <tr><td><code>generateMCQs()</code></td><td>Generate screening MCQs for a job</td><td>Text generation</td></tr>
+  <tr><td><code>parseMCQsFromImages()</code></td><td>Extract MCQs from uploaded PDF</td><td>Vision</td></tr>
+  <tr><td><code>generateJobRecommendations()</code></td><td>Recommend jobs for a student</td><td>Text generation</td></tr>
+  <tr><td><code>generateCoverLetterSuggestion()</code></td><td>Write cover letter for application</td><td>Text generation</td></tr>
+  <tr><td><code>analyzeResume()</code></td><td>Score &amp; suggest improvements for resume</td><td>Text generation</td></tr>
+  <tr><td><code>analyzeInterviewSentiment()</code></td><td>Analyze tone &amp; communication quality</td><td>Text generation</td></tr>
+  <tr><td><code>predictHiringSelection()</code></td><td>Multi-factor hiring probability prediction</td><td>Text generation</td></tr>
+  <tr><td><code>scanInterviewProctoring()</code></td><td>Cheating detection via image analysis</td><td>Vision</td></tr>
+</table>
+
+<p><strong>Gemini Model:</strong> <code>gemini-2.5-flash</code> with temperature 0.5, max 2048 output tokens</p>
+<p><strong>API Key:</strong> Stored in <code>local.properties</code> as <code>GEMINI_API_KEY</code>, accessed via <code>BuildConfig.GEMINI_API_KEY</code></p>
+
+<div style="page-break-before:always;"></div>
+
+<!-- ===== 6. CV PARSING ===== -->
+<h1>6. CV Parsing &amp; Skill Matching</h1>
+
+<h2>CVParsingService.kt (Android - uses Gemini AI)</h2>
+<table>
+  <tr><th>Step</th><th>Description</th></tr>
+  <tr><td>1. Render PDF</td><td>PDFBox renders PDF pages to Bitmap images (max 3 pages, 1024px width)</td></tr>
+  <tr><td>2. Vision AI Parse</td><td>Gemini Vision analyzes images → extracts structured JSON</td></tr>
+  <tr><td>3. Match CV to Job</td><td>Gemini Text AI compares CV vs job → match score (0-100)</td></tr>
+  <tr><td>4. Fallback</td><td>If AI fails → basic keyword matching algorithm</td></tr>
+</table>
+
+<p><strong>Scoring criteria:</strong></p>
+<ul>
+  <li>Skills match: 40% weight</li>
+  <li>Experience relevance: 30% weight</li>
+  <li>Education &amp; GPA: 20% weight</li>
+  <li>Projects &amp; certifications: 10% weight</li>
+</ul>
+
+<h2>AISkillMatchingService.kt (Android - uses Gemini AI)</h2>
+<ul>
+  <li><code>getSkillMatches()</code> — Matches student skills against all active jobs using AI</li>
+  <li><code>analyzeStudentSkills()</code> — Comprehensive skill analysis (technical/soft skills, career path)</li>
+  <li><code>getLearningRecommendations()</code> — Personalized learning suggestions</li>
+  <li><code>getRealTimeJobSuggestions()</code> — Profile-based real-time job categories</li>
+  <li>Fallback to basic set intersection when AI is unavailable</li>
+</ul>
+
+<div style="page-break-before:always;"></div>
+
+<!-- ===== 7. PYTHON NLP ===== -->
+<h1>7. Python NLP Backend (Standalone)</h1>
+
+<p><code>python_backend/spb_nlp/</code> — Pure Python implementation of the 4 core features.</p>
+
+<h2>Module Structure</h2>
+<table>
+  <tr><th>File</th><th>Class</th><th>Purpose</th><th>Lines</th></tr>
+  <tr><td><code>cv_parser.py</code></td><td>CVParser</td><td>PDF text extraction + NLP information extraction</td><td>~150</td></tr>
+  <tr><td><code>semantic_matcher.py</code></td><td>SemanticMatcher</td><td>Cosine similarity (embedding or n-gram fallback)</td><td>~200</td></tr>
+  <tr><td><code>shortlister.py</code></td><td>Shortlister</td><td>Threshold-based candidate filtering</td><td>~120</td></tr>
+  <tr><td><code>recommender.py</code></td><td>JobRecommender</td><td>Personalized job recommendations</td><td>~230</td></tr>
+  <tr><td><code>models.py</code></td><td>Data classes</td><td>Student, Job, CVParseResult, MatchResult, etc.</td><td>~100</td></tr>
+  <tr><td><code>utils.py</code></td><td>Functions</td><td>172 skill keywords, regex patterns, text cleaning</td><td>~235</td></tr>
+</table>
+
+<h2>Feature Details</h2>
+
+<h3>1. CV Parsing (NLP — no AI needed)</h3>
+<p>Uses regex + keyword matching to extract:</p>
+<ul>
+  <li><strong>Name:</strong> First non-empty line heuristic</li>
+  <li><strong>Email:</strong> Regex pattern matching</li>
+  <li><strong>Phone:</strong> Pakistani &amp; international number formats</li>
+  <li><strong>Skills:</strong> 172 predefined skill keywords matched case-insensitively</li>
+  <li><strong>Education:</strong> Section detection + degree keywords</li>
+  <li><strong>Experience:</strong> Section detection + year extraction</li>
+  <li><strong>GPA:</strong> Pattern matching (X.X/4.0, CGPA: X.X)</li>
+  <li><strong>Certifications:</strong> Section + keyword detection</li>
+</ul>
+
+<h3>2. CV Parsing — spaCy NER + Regex</h3>
+<ul>
+  <li><strong>SpacyNerParser</strong> class extends CVParser with spaCy <code>en_core_web_lg</code> NER model</li>
+  <li>Extracts: <strong>PERSON</strong> → candidate name, <strong>ORG</strong> → universities/companies, <strong>PRODUCT</strong> → tech skills</li>
+  <li>Hybrid approach: NER + 172 keyword set for maximum coverage</li>
+  <li>Automatic fallback to regex-based CVParser when spaCy not installed</li>
+  <li>Check: <code>parser.is_using_spacy</code> property to verify NER is active</li>
+</ul>
+
+<h3>3. Semantic Matching — BERT Embeddings + Cosine Similarity</h3>
+<ul>
+  <li><strong>Primary:</strong> BERT sentence-transformers (all-MiniLM-L6-v2) → 384-dim dense embeddings → cosine similarity</li>
+  <li><strong>Fallback:</strong> Pure Python character n-gram (bigram + trigram) cosine similarity — zero external deps</li>
+  <li>Model loaded eagerly by default; <code>lazy_load=True</code> for deferred loading</li>
+  <li>Check: <code>matcher.using_bert</code> property to verify BERT is active</li>
+  <li><strong>Composite score:</strong> 60% semantic + 40% keyword overlap + experience/education bonus</li>
+</ul>
+
+<h3>4. Shortlisting</h3>
+
+<h3>3. Shortlisting</h3>
+<ul>
+  <li>Filters by match score threshold (per-job or global)</li>
+  <li>Optional GPAA minimum, experience minimum</li>
+  <li>Top-K ranking</li>
+  <li>Returns shortlisted vs rejected lists with reasons</li>
+</ul>
+
+<h3>4. Job Recommendations</h3>
+<ul>
+  <li>Hybrid scoring: 40% skill overlap + 40% semantic similarity + 20% education bonus</li>
+  <li>CV-based or Student-profile-based recommendations</li>
+  <li>Re-ranking on profile changes</li>
+  <li>Filters: location, salary range</li>
+</ul>
+
+<div style="page-break-before:always;"></div>
+
+<!-- ===== 8. DATABASE SCHEMA ===== -->
+<h1>8. Firestore Database Schema</h1>
+
+<h2>Collection: students</h2>
+<pre>
+students/{userId} {
+  studentId: String,
+  fullName: String,
+  email: String,
+  phone: String,
+  university: String,
+  degree: String,
+  major: String,
+  graduationYear: Int,
+  cgpa: Double,
+  skills: Array&lt;String&gt;,       // ["Python", "Java", ...]
+  certifications: Array&lt;String&gt;,
+  cvUrl: String,                 // Firebase Storage URL
+  resumeText: String,            // Extracted text from CV
+  profileComplete: Boolean,
+  fcmToken: String,
+  createdAt: Timestamp,
+  updatedAt: Timestamp
+}
+</pre>
+
+<h2>Collection: companies</h2>
+<pre>
+companies/{userId} {
+  companyId: String,
+  companyName: String,
+  registrationNumber: String,
+  email: String,
+  website: String,
+  industry: String,
+  companySize: String,
+  contactPerson: { name, designation, phone },
+  phone: String,
+  logoUrl: String,
+  verified: Boolean,
+  status: "pending" | "approved" | "rejected",
+  fcmToken: String,
+  createdAt: Timestamp,
+  updatedAt: Timestamp
+}
+</pre>
+
+<h2>Collection: jobs</h2>
+<pre>
+jobs/{autoId} {
+  jobId: String,
+  companyId: String,
+  companyName: String,
+  title: String,
+  type: "job" | "internship",
+  description: String,
+  requirements: Array&lt;String&gt;,
+  qualifications: Array&lt;String&gt;,
+  requiredSkills: Array&lt;String&gt;,      // For matching
+  location: String,
+  salary: String,
+  deadline: Timestamp,
+  interviewType: "Technical" | "HR" | "Case Study" | "Behavioral" | "Panel",
+  mcqs: Array&lt;MCQ&gt;,
+  passingScore: Double,                // MCQ screening pass score
+  status: "active" | "closed",
+  applicationsCount: Int,
+  matchingThreshold: Double,           // Default 50.0
+  createdAt: Timestamp
+}
+</pre>
+
+<h2>Collection: applications</h2>
+<pre>
+applications/{autoId} {
+  applicationId: String,
+  jobId: String,
+  studentId: String,
+  companyId: String,
+  studentName: String,
+  jobTitle: String,
+  companyName: String,
+  cvUrl: String,
+  resumeText: String,
+  matchScore: Double,                  // AI-computed match (0-100)
+  coverLetter: String,
+  status: "applied" | "interviewing" | "shortlisted" | "rejected" | "selected",
+  interviewCompleted: Boolean,
+  interviewScore: Double,
+  interviewData: { answers[], activityLog{} },
+  mcqScore: Double,
+  passedScreening: Boolean,
+  interviewTimestamp: Timestamp,
+  interviewType: String,
+  isAiInterview: Boolean,
+  appliedAt: Timestamp,
+  updatedAt: Timestamp
+}
+</pre>
+
+<div style="page-break-before:always;"></div>
+
+<!-- ===== 9. NAVIGATION ===== -->
+<h1>9. Complete Navigation Flow</h1>
+
+<pre style="font-size:11px;">
+                    ┌───────────┐
+                    │   SPLASH   │
+                    └─────┬─────┘
+                          │
+                    ┌─────▼─────┐
+                    │  WELCOME   │
+                    └─────┬─────┘
+                          │
+                    ┌─────▼──────────┐
+                    │ USER TYPE SELECT│
+                    └──┬──────────┬──┘
+                       │          │
+              ┌────────▼──┐  ┌───▼────────┐
+              │ STUDENT    │  │ COMPANY     │
+              │ REGISTER/  │  │ REGISTER/   │
+              │ LOGIN      │  │ LOGIN       │
+              └─────┬──────┘  └──────┬──────┘
+                    │                │
+        ┌───────────▼──────────┐  ┌─▼─────────────────┐
+        │ STUDENT DASHBOARD    │  │ COMPANY DASHBOARD  │
+        │ - Recommended Jobs   │  │ - Job Stats        │
+        │ - Notifications      │  │ - Recent Apps      │
+        │ - Recent Apps        │  │ - Analytics        │
+        └───┬───┬───┬───┬─────┘  └──┬──┬──┬──┬────────┘
+            │   │   │   │           │  │  │  │
+     ┌──────┘   │   │   └───┐  ┌───┘  │  │  └──────┐
+     ▼          │   │       ▼  ▼      │  │         ▼
+┌─────────┐     │   │  ┌─────────┐    │  │  ┌────────────┐
+│ BROWSE  │     │   │  │ ANALYTICS│   │  │  │ POST JOB   │
+│ JOBS    │     │   │  └─────────┘   │  │  └────────────┘
+└────┬────┘     │   │               │  │
+     │          │   │               │  │
+     ▼          │   │               ▼  │
+┌──────────┐    │   │          ┌───────────┐
+│ JOB      │    │   │          │  MANAGE   │
+│ DETAILS  │    │   │          │  JOBS     │
+│ ─ Apply  │    │   │          └─────┬─────┘
+│ ─ Match  │    │   │                │
+└──┬───────┘    │   │                ▼
+   │            │   │          ┌──────────────┐
+   ▼            │   │          │ VIEW APPLIC. │
+┌──────────┐    │   │          │ (sorted by   │
+│ APPLICA- │    │   │          │  match score)│
+│ TION     │    │   │          └──────┬───────┘
+│ SUBMIT   │    │   │                 │
+│ (CV + AI)│    │   │          ┌──────▼───────┐
+└──────────┘    │   │          │ APPLICANT    │
+                │   │          │ DETAILS      │
+                │   │          │ - CV Text    │
+                │   │          │ - Match Score│
+                │   │          │ - Interview  │
+                │   │          │   Results    │
+                │   │          └──────┬───────┘
+                │   │                 │
+     ┌──────────┘   │          ┌──────▼───────┐
+     ▼              │          │ SCHEDULE     │
+┌──────────┐        │          │ INTERVIEW    │
+│ MY APP-  │        │          │ (Tech/HR/AI/ │
+│ LICATIONS│        │          │  Case Study) │
+│ - Status │        │          └──────────────┘
+│ - Score  │        │
+└──────────┘        │
+     │              │
+     ▼              │
+┌──────────┐        │
+│ INTERVIEW│        │
+│ (AI)     │        │
+│ - Q&A    │        │
+│ - Score  │        │
+└──────────┘        │
+     │              │
+     ▼              │
+┌──────────┐        │
+│ ASSESS-  │        │
+│ MENT     │        │
+│ (MCQs)   │        │
+└──────────┘        │
+</pre>
+
+<div style="page-break-before:always;"></div>
+
+<!-- ===== 10. FILE LISTING ===== -->
+<h1>10. Complete File Listing</h1>
+
+<h2>Android App (78 files)</h2>
+<table>
+  <tr><th>File</th><th>Lines</th><th>Purpose</th></tr>
+  <tr><td><code>MainActivity.kt</code></td><td>127</td><td>Entry point, notifications, nav graph</td></tr>
+  <tr><td><code>navigation/Screen.kt</code></td><td>49</td><td>All route definitions</td></tr>
+  <tr><td><code>navigation/NavGraph.kt</code></td><td>184</td><td>Navigation host with all composables</td></tr>
+  <tr><td><code>ui/theme/Color.kt</code></td><td>~30</td><td>App color palette</td></tr>
+  <tr><td><code>ui/theme/Theme.kt</code></td><td>~50</td><td>Dark theme + Material3</td></tr>
+  <tr><td><code>ui/theme/Type.kt</code></td><td>~30</td><td>Typography</td></tr>
+  <tr><td><code>ui/components/FormComponents.kt</code></td><td>~200</td><td>Reusable form fields</td></tr>
+  <tr><td><code>ui/components/AdvancedUIComponents.kt</code></td><td>~250</td><td>Glassmorphism, Holographic cards</td></tr>
+  <tr><td><code>ui/components/FluidAnimations.kt</code></td><td>~100</td><td>Particle effects, animations</td></tr>
+  <tr><td><code>ui/screens/splash/SplashScreen.kt</code></td><td>~80</td><td>Logo + auto-navigate</td></tr>
+  <tr><td><code>ui/screens/welcome/WelcomeScreen.kt</code></td><td>~100</td><td>Welcome with animations</td></tr>
+  <tr><td><code>ui/screens/auth/UserTypeSelectionScreen.kt</code></td><td>~80</td><td>Student vs Company selection</td></tr>
+  <tr><td><code>ui/screens/auth/LoginScreens.kt</code></td><td>~200</td><td>Student + Company login</td></tr>
+  <tr><td><code>ui/screens/auth/StudentRegisterScreen.kt</code></td><td>~300</td><td>Student registration form</td></tr>
+  <tr><td><code>ui/screens/auth/CompanyRegisterScreen.kt</code></td><td>~250</td><td>Company registration form</td></tr>
+  <tr><td><code>ui/screens/auth/AuthScreens.kt</code></td><td>~150</td><td>Shared auth UI</td></tr>
+  <tr><td><code>ui/screens/student/StudentDashboardScreen.kt</code></td><td>659</td><td>Dashboard with recommended jobs</td></tr>
+  <tr><td><code>ui/screens/student/StudentScreens.kt</code></td><td>~400</td><td>Browse jobs, job cards</td></tr>
+  <tr><td><code>ui/screens/student/JobDetailsScreen.kt</code></td><td>~300</td><td>Job detail + apply button</td></tr>
+  <tr><td><code>ui/screens/student/FileUploadScreens.kt</code></td><td>~200</td><td>CV upload</td></tr>
+  <tr><td><code>ui/screens/student/SkillMatchingScreen.kt</code></td><td>599</td><td>AI skill matches UI</td></tr>
+  <tr><td><code>ui/screens/student/InterviewScreen.kt</code></td><td>~300</td><td>AI interview Q&A</td></tr>
+  <tr><td><code>ui/screens/student/AssessmentScreen.kt</code></td><td>~250</td><td>MCQ screening test</td></tr>
+  <tr><td><code>ui/screens/student/NotificationsScreen.kt</code></td><td>~150</td><td>Notification list</td></tr>
+  <tr><td><code>ui/screens/company/CompanyDashboardScreen.kt</code></td><td>~400</td><td>Company dashboard with stats</td></tr>
+  <tr><td><code>ui/screens/company/CompanyScreens.kt</code></td><td>~300</td><td>Post job, manage jobs</td></tr>
+  <tr><td><code>ui/screens/company/ViewApplicationsScreen.kt</code></td><td>~300</td><td>Applicants sorted by score</td></tr>
+  <tr><td><code>ui/screens/company/ApplicationDetailsScreen.kt</code></td><td>~400</td><td>Full applicant detail</td></tr>
+  <tr><td><code>ui/screens/company/ScheduleInterviewScreen.kt</code></td><td>~200</td><td>Schedule interview form</td></tr>
+  <tr><td><code>ui/screens/company/BulkScheduleInterviewScreen.kt</code></td><td>~200</td><td>Bulk interview scheduling</td></tr>
+  <tr><td><code>ui/screens/company/AnalyticsScreen.kt</code></td><td>~300</td><td>Charts and statistics</td></tr>
+  <tr><td colspan="3" style="text-align:center;font-style:italic;">... and 10+ more files for models, repositories, viewmodels, utilities</td></tr>
+</table>
+
+<h2>Python NLP Backend (8 files)</h2>
+<table>
+  <tr><th>File</th><th>Lines</th><th>Purpose</th></tr>
+  <tr><td><code>spb_nlp/__init__.py</code></td><td>20</td><td>Package init</td></tr>
+  <tr><td><code>spb_nlp/models.py</code></td><td>100</td><td>Data classes</td></tr>
+  <tr><td><code>spb_nlp/utils.py</code></td><td>235</td><td>NLP utilities, 172 skill keywords</td></tr>
+  <tr><td><code>spb_nlp/cv_parser.py</code></td><td>210</td><td>CV parsing — CVParser (regex) + SpacyNerParser (NER model)</td></tr>
+  <tr><td><code>spb_nlp/semantic_matcher.py</code></td><td>235</td><td>BERT embedding / n-gram cosine matching</td></tr>
+  <tr><td><code>spb_nlp/shortlister.py</code></td><td>120</td><td>Candidate shortlisting</td></tr>
+  <tr><td><code>spb_nlp/recommender.py</code></td><td>230</td><td>Job recommendations</td></tr>
+  <tr><td><code>spb_nlp/demo.py</code></td><td>200</td><td>End-to-end demo (spaCy + BERT status)</td></tr>
+  <tr><td><code>tests/test_all.py</code></td><td>210</td><td>16 unit tests (CVParser + SpacyNerParser + matcher + shortlister + recommender)</td></tr>
+  <tr><td><code>requirements.txt</code></td><td>25</td><td>Dependencies (spaCy + sentence-transformers)</td></tr>
+</table>
+
+<div style="page-break-before:always;"></div>
+
+<h1>Appendix: Key Code Snippets</h1>
+
+<h2>CV Parsing Result (Python)</h2>
+<pre>@dataclass
+class CVParseResult:
+    candidate_name: str = ""
+    email: str = ""
+    phone: str = ""
+    skills: List[str] = field(default_factory=list)
+    experience: str = ""
+    education: str = ""
+    gpa: float = 0.0
+    years_of_experience: float = 0.0
+    certifications: List[str] = field(default_factory=list)
+    projects: List[str] = field(default_factory=list)
+    summary: str = ""
+    raw_text: str = ""</pre>
+
+<h2>Semantic Match Result</h2>
+<pre>@dataclass
+class MatchResult:
+    job_id: str = ""
+    job_title: str = ""
+    company_name: str = ""
+    match_score: float = 0.0
+    meets_threshold: bool = False
+    matching_skills: List[str] = field(default_factory=list)
+    missing_skills: List[str] = field(default_factory=list)
+    cosine_similarity: float = 0.0
+    recommendations: List[str] = field(default_factory=list)</pre>
+
+<h2>Composite Score Formula</h2>
+<pre># 60% Semantic + 40% Keyword → then 60% of that + 40% structured
+base = (cosine_similarity * 60.0) + (skill_overlap_score * 0.4)
+total = base * 0.6 + (experience_score + education_score + extra) * 0.4
+total = min(total, 100.0)</pre>
+
+<h2>Gemini AI Prompt Pattern</h2>
+<pre>// All AI prompts follow this pattern:
+val prompt = buildString {
+    appendLine("You are an expert [role].")
+    appendLine("INPUT DATA: [structured data]")
+    appendLine("Return ONLY a JSON object:")
+    appendLine("{ field: value }")
+    appendLine("Scoring criteria: [weights]")
+}
+val response = model.generateContent(prompt)
+// Parse JSON from response</pre>
+
+<hr style="margin-top:40px;">
+<p style="text-align:center;color:#888;font-size:12px;">
+  SPB — Smart Placement Bureau | FYP Documentation | June 2026
+</p>
+
+</body>
+</html>

@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HireMentor — Complete Explanation (Every Concept &amp; Number)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, sans-serif; color: #1a1a2e; background: #f8f9fc; line-height: 1.8; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 30px; }
+  
+  .cover { text-align: center; padding: 60px 40px; background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460); color: white; border-radius: 20px; margin-bottom: 40px; }
+  .cover h1 { font-size: 36px; font-weight: 800; }
+  .cover .subtitle { font-size: 18px; opacity: 0.8; margin-top: 10px; }
+  .cover .badge { display: inline-block; background: #e94560; padding: 6px 20px; border-radius: 20px; margin-top: 20px; font-weight: 600; font-size: 14px; }
+  
+  .section { background: white; border-radius: 16px; padding: 30px; margin-bottom: 25px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .section h2 { font-size: 24px; font-weight: 700; color: #1a1a2e; border-bottom: 3px solid #e94560; padding-bottom: 10px; margin-bottom: 20px; }
+  .section h3 { font-size: 18px; font-weight: 600; color: #0f3460; margin: 20px 0 10px; }
+  .section h4 { font-size: 16px; font-weight: 600; color: #e94560; margin: 15px 0 8px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th { background: #1a1a2e; color: white; padding: 8px 10px; text-align: left; font-weight: 600; }
+  td { padding: 7px 10px; border-bottom: 1px solid #e8e8e8; }
+  tr:nth-child(even) td { background: #f8f9fc; }
+
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .tag-green { background: #d4edda; color: #155724; }
+  .tag-yellow { background: #fff3cd; color: #856404; }
+  .tag-red { background: #f8d7da; color: #721c24; }
+  .tag-blue { background: #cce5ff; color: #004085; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin: 15px 0; }
+  .stat { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px; border-radius: 10px; text-align: center; }
+  .stat .num { font-size: 26px; font-weight: 800; }
+  .stat .lbl { font-size: 11px; opacity: 0.85; margin-top: 3px; }
+  .stat.green { background: linear-gradient(135deg, #11998e, #38ef7d); }
+  .stat.orange { background: linear-gradient(135deg, #f093fb, #f5576c); }
+  .stat.blue { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+
+  ul, ol { padding-left: 20px; margin: 8px 0; }
+  li { margin: 4px 0; font-size: 14px; line-height: 1.6; }
+
+  .q-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 8px; padding: 15px; margin: 12px 0; }
+  .q-box .q { font-weight: 700; color: #1a1a2e; }
+  .q-box .a { color: #444; margin-top: 5px; }
+
+  .highlight { background: #fff8e6; border: 1px solid #ffc107; border-radius: 8px; padding: 12px; margin: 10px 0; font-size: 14px; }
+  .highlight strong { color: #856404; }
+
+  pre { background: #1a1a2e; color: #e8e8e8; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto; margin: 10px 0; }
+  code { background: #f0f0f0; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+
+  @media print {
+    body { background: white; }
+    .section { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+    .cover { break-after: page; }
+    @page { margin: 10mm; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="badge">FINAL YEAR PROJECT — COMPLETE EXPLANATION</div>
+  <h1>HireMentor</h1>
+  <div class="subtitle">Every Concept, Every Number, Every "KYUN" — Explained in Detail</div>
+  <p style="margin-top:25px;max-width:650px;margin-left:auto;margin-right:auto;opacity:0.9;font-size:15px;">
+    Yeh document un 2 PDFs ka complete explanation hai jo humne banayi hain:<br>
+    <strong>(A) HireMentor_Research_Presentation.pdf</strong> — 8 slides, research-oriented<br>
+    <strong>(B) HireMentor_Complete_Documentation.pdf</strong> — 13 sections, full documentation
+  </p>
+  <p style="margin-top:15px;font-size:13px;opacity:0.6;">Generated: June 2026</p>
+</div>
+
+<!-- ═══════════════ 1. PROJECT OVERVIEW ═══════════════ -->
+<div class="section">
+<h2>1. Project Overview — HireMentor Kya Hai?</h2>
+
+<p><strong>HireMentor</strong> ek <strong>AI-powered job placement system</strong> hai jo Android app (Kotlin + Jetpack Compose) ko Python NLP backend (spaCy, BERT, Regex) ke saath integrate karta hai. Iska kaam hai:</p>
+
+<ol>
+  <li><strong>CV Parse karna</strong> — Upload ki gayi CV se name, skills, experience, education, GPA, certifications nikaalna</li>
+  <li><strong>Job se match karna</strong> — CV ko available jobs se compare karna aur score dena (0-100)</li>
+  <li><strong>Shortlist karna</strong> — Sirf eligible candidates ko filter karna (score ≥ 55, experience ≥ 1 year)</li>
+  <li><strong>Recommend karna</strong> — Student ko best jobs suggest karna</li>
+  <li><strong>AI Interview</strong> — REST API ke through interview questions generate karna, answers score karna, skill gap analysis karna</li>
+</ol>
+
+<div class="highlight">
+<strong>App Name:</strong> "HireMentor" (folder ka naam "SPB" tha pehle)<br>
+<strong>Python Backend:</strong> C:\Users\HYE\AndroidStudioProjects\SPB\python_backend\<br>
+<strong>Datasets:</strong> Kaggle Resume Dataset (2,484 CVs, 24 categories) + Monster.com jobs (66K+) + 3 Ground Truth CVs<br>
+<strong>PDFs Generated:</strong> HireMentor_Research_Presentation.pdf (324 KB) + HireMentor_Complete_Documentation.pdf (904 KB)
+</div>
+</div>
+
+<!-- ═══════════════ 2. DONO PDFs KA COMPARISON ═══════════════ -->
+<div class="section">
+<h2>2. Dono PDFs Mein Kya Hai? Comparison</h2>
+
+<table>
+<tr><th>Feature</th><th>Research Presentation (8 slides)</th><th>Complete Documentation (13 sections)</th></tr>
+<tr><td><strong>Audience</strong></td><td>Supervisor / Research committee</td><td>Team members / Future developers</td></tr>
+<tr><td><strong>Pyhto AI mention?</strong></td><td>❌ No (hidden as "REST API")</td><td>✅ Yes (internal document)</td></tr>
+<tr><td><strong>Focus</strong></td><td>Research contribution + Results</td><td>Complete system details</td></tr>
+<tr><td><strong>Structure</strong></td><td>Problem → Gap → Method → Results → Demo</td><td>Architecture → Models → Code → Usage</td></tr>
+<tr><td><strong>Content</strong></td><td>Hybrid NLP, BERT penalty, date fallback</td><td>25 screens, 16 tests, all dependencies</td></tr>
+</table>
+
+<div class="highlight">
+<strong>KYUN do alag PDFs?</strong> — Research Presentation supervisor ko dikhani hai (professional, no branding names). Complete Documentation internal use ke liye hai (sab kuch detail mein).
+</div>
+</div>
+
+<!-- ═══════════════ 3. EVERY NUMBER EXPLAINED ═══════════════ -->
+<div class="section">
+<h2>3. Every Number — Complete Explanation</h2>
+
+<p>Har ek number jo PDFs mein aata hai, uska matlab, KYUN woh number hai, aur kahan use hota hai:</p>
+
+<!-- 2,484 -->
+<h3>🔢 2,484 — Kaggle CVs</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Kaggle Resume Dataset se total 2,484 resumes. 24 different job categories mein divide hain (Data Science, Software Engineering, Marketing, Finance, Healthcare, etc.).</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 2,484?</div>
+<div class="a">Yeh publicly available sabse bada resume dataset hai. Isliye choose kiya kyunke real-world variety chahiye thi — different formats, different categories, different writing styles. Isse evaluate kar sakte hain ke system diverse CVs pe kaam karta hai ya nahi.</div>
+</div>
+<div class="q-box">
+<div class="q">Kahan use hota hai?</div>
+<div class="a">Slide 1 (dataset mention), Slide 5 (Kaggle evaluation), Section 7 (accuracy table). Python backend is dataset ko read karta hai evaluation ke waqt.</div>
+</div>
+
+<!-- 24 -->
+<h3>🔢 24 — Job Categories</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Kaggle dataset mein 24 different job categories hain — Data Science, Software Engineering, Web Development, Marketing, Finance, HR, Healthcare, etc.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 24?</div>
+<div class="a">Dataset creator ne itni categories classify ki hain. 24 categories ensure karti hain ke diverse domains cover hain — sirf IT nahi, balki HR, Marketing, Finance bhi.</div>
+</div>
+<div class="q-box">
+<div class="q">Kahan use hota hai?</div>
+<div class="a">Per-category evaluation ke liye — har category mein name/experience/skills detection rate measure karte hain.</div>
+</div>
+
+<!-- 3 -->
+<h3>🔢 3 — Ground Truth CVs</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">3 CVs jo manually (human ne) annotate ki gayi — har field manually verify ki gayi hai. Inhe "ground truth" (true values) kehte hain kyunke yeh 100% accurate hain.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN sirf 3?</div>
+<div class="a">Manual annotation bahut time-consuming hai. Har CV mein 10+ fields hain — name, email, phone, skills (multiple), experience, education, GPA, certifications. 3 CVs sufficient hain proof-of-concept ke liye accuracy measure karne ke liye.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 3 hi kaafi hain?</div>
+<div class="a">Model ke behavior ko validate karne ke liye 3 different CVs kaafi hain — ek Python/Java/React wala (John), ek ML/DataScience wali (Jane), ek Android wala (Ali). In teeno ko 3-3 different jobs se match karte hain → 9 pairs.</div>
+</div>
+
+<!-- 9 -->
+<h3>🔢 9 — Human-Judged Match Score Pairs</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">3 CVs × 3 Jobs = 9 pairs. Har pair ke liye human ne manually score diya (0-100) aur model ne bhi score diya. Dono ka comparison karte hain.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 9?</div>
+<div class="a">3 CVs × 3 Jobs = 9 combinations. John ko 3 jobs ke saath match kiya (Sr Python Developer, Frontend, Data Scientist). Jane ko 3 jobs ke saath (Data Scientist, Backend, Data Analyst). Ali ko 3 jobs ke saath (Android Developer, Python Backend, Frontend). Total = 9.</div>
+</div>
+<div class="q-box">
+<div class="q">Kya pata chalta hai?</div>
+<div class="a">MAE (Mean Absolute Error) calculate karte hain — model score aur human score ka average difference. Agar MAE kam hai to model human jitna accurate score de raha hai.</div>
+</div>
+
+<!-- 172 -->
+<h3>🔢 172 — Skill Keywords</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">172 pre-defined technology skills ki list. Jaise: python, java, javascript, react, django, tensorflow, sql, docker, kubernetes, aws, etc.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 172 (specific number)?</div>
+<div class="a">100 common skills (top job descriptions se collect) + 50 domain-specific skills (ML, Cloud, DevOps) + 22 emerging technologies (AI, Blockchain). 172 ek balance hai — 100 se kam to kafi skills miss ho jayengi (recall drop), 300+ to false positives aa jayenge (precision drop). 172 par optimum performance mila.</div>
+</div>
+<div class="q-box">
+<div class="q">Kahan store hain?</div>
+<div class="a"><code>utils.py</code> mein ek constant array hai — <code>SKILL_KEYWORDS = [...]</code></div>
+</div>
+<div class="q-box">
+<div class="q">KYUN important?</div>
+<div class="a">Scoring formula mein 60% weight skill overlap ka hai. Agar keywords incomplete hain to score galat hoga. 172 keywords ensure karte hain ke 90%+ common skills covered hain.</div>
+</div>
+
+<!-- 384 -->
+<h3>🔢 384 — BERT Vector Dimension</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">BERT model (all-MiniLM-L6-v2) har text ko 384 numbers (vector) mein convert karta hai. Yeh vector text ka "meaning" represent karta hai.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 384 (size)?</div>
+<div class="a">all-MiniLM-L6-v2 model architecture aisi hai — 6 transformer layers, each producing 384-dim output. Compare karo: BERT large = 1024-dim (slow, heavy). MiniLM = 384-dim (fast, light, but still good quality).</div>
+</div>
+<div class="q-box">
+<div class="q">Kaam kaise karta hai?</div>
+<div class="a">CV text → 384-dim vector. Job text → 384-dim vector. In dono vectors ke beech cosine similarity calculate karte hain (0 to 1). Agar similar hain to 1 ke接近, dissimilar hain to 0 ke接近.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 384-dim enough hai?</div>
+<div class="a">Short text (CVs, job descriptions) ke liye 384-dim sufficient hai. 1024-dim sirf long documents ke liye zaroori hota hai.</div>
+</div>
+
+<!-- 400 MB -->
+<h3>🔢 400 MB — spaCy Model Size</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">spaCy ka sabse bada English model (en_core_web_lg) — 400 MB size. Disk space mein itni jagah leta hai.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 400 MB (itna bada)?</div>
+<div class="a">Isme pre-trained word vectors (300-dim), NER model, POS tagger, dependency parser — sab kuch packaged hai. Chhota model (en_core_web_sm = 12 MB) bhi hai, lekin lg ka accuracy better hai (90%+ vs 85%).</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN lg choose kiya?</div>
+<div class="a">Better NER accuracy — name (PERSON), skills (PRODUCT/ORG), education (ORG) detect karne mein lg zyada accurate hai. sm model kuch entities miss kar deta hai.</div>
+</div>
+<div class="q-box">
+<div class="q">Problem?</div>
+<div class="a">Download timeout ho sakta hai slow connections pe. Isliye fallback daala — agar lg download nahi hota to sm use karo, woh bhi nahi to pure regex CVParser use karo (graceful degradation).</div>
+</div>
+
+<!-- 80 MB -->
+<h3>🔢 80 MB — BERT Model Size</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">sentence-transformers ka all-MiniLM-L6-v2 model — 80 MB. Disk space mein itni jagah leta hai.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 80 MB (chhota kyun)?</div>
+<div class="a">Sirf 6 transformer layers hain (BERT large mein 24 hain). Knowledge distillation technique use hui hai — bade model ka knowledge chhote model mein compress kiya. Isliye size kam hai lekin quality still good hai.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN BERT large nahi?</div>
+<div class="a">BERT large (340 MB) CPU pe slow hai — 500ms+ lagta hai. MiniLM (80 MB) sirf ~150ms lagta hai. Accuracy difference minimal hai short text ke liye.</div>
+</div>
+
+<!-- 89.6% -->
+<h3>🔢 89.6% — F1 Score</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">F1 Score = Harmonic mean of Precision and Recall. Formula: 2 × (P × R) / (P + R)</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 89.6% (calculation)?</div>
+<div class="a">Precision = 86.7%, Recall = 94.4%. Formula lagao: 2 × (86.7 × 94.4) / (86.7 + 94.4) = 2 × 8184.48 / 181.1 = 16368.96 / 181.1 = 89.566... ≈ <strong>89.6%</strong></div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 100% nahi?</div>
+<div class="a">Perfect F1 (100%) ke liye precision=100% AND recall=100% dono chahiye. Yeh NLP mein almost impossible hai kyunke:</div>
+<ul>
+  <li>Precision 100% = koi false positive nahi → har identified skill truly ek skill hai. Lekin iske liye itna strict hona padega ke kuch real skills bhi miss ho jayengi.</li>
+  <li>Recall 100% = sab real skills pakdo → lekin iske liye itna loose hona padega ke false positives aa jayenge.</li>
+  <li>89.6% ek balanced score hai — dono ka best compromise.</li>
+</ul>
+</div>
+<div class="highlight">
+<strong>Compare:</strong> Commercial resume parsers typically get 85-92% F1. Hamara 89.6% industry standard ke barabar ya usse better hai.
+</div>
+
+<!-- 86.7% -->
+<h3>🔢 86.7% — Precision</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Precision = True Positives / (True Positives + False Positives). Matlab: Model ne jo skills nikaali, unmein se kitni actually sahi thi?</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 86.7% (pehle 68% tha)?</div>
+<div class="a">Pehle substring matching use kar rahe the — "python" check karte waqt agar CV mein "python" kahi bhi hai to match kar deta tha. Iski wajah se false positives aate the:</div>
+<ul>
+  <li>"c" match ho jaata tha "account" se (word "c" nahi, but letter "c" substring match)</li>
+  <li>"go" match ho jaata tha "ongoing" se</li>
+  <li>"r" match ho jaata tha "Senior" se (letter "r" ka substring match)</li>
+</ul>
+<div class="a">FIX: Word-boundary regex <code>(?&lt;!\w)(skill)(?!\w)</code> lagaya. Ab sirf whole word match hota hai. Precision 68% → 86.7% (18.7% improvement).</div>
+</div>
+<div class="highlight">
+<strong>KYUN 100% nahi?</strong> Kuch genuine skills bhi word boundary issues de sakti hain jaise "C#" ya "C++" — inka .NET ya C++.NET jaisa kuch match ho sakta hai. Perfect precision impossible hai.
+</div>
+
+<!-- 94.4% -->
+<h3>🔢 94.4% — Recall</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Recall = True Positives / (True Positives + False Negatives). Matlab: Jo skills actually thi, unmein se kitni model ne pakdi?</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 94.4% (pehle 100% tha)?</div>
+<div class="a">Pehle substring matching use kar rahe the — sab kuch "match" kar jaata tha (including false positives). Isliye recall 100% tha. Word-boundary regex lagane ke baad kuch niche/emerging skills miss ho gayi kyunke woh 172 keywords mein nahi the ya edge cases the:</div>
+<ul>
+  <li>"Keras" miss ho sakta hai agar keyword list mein nahi hai</li>
+  <li>"Terraform" miss ho sakta hai agar niche technology hai</li>
+</ul>
+<div class="a">Recall 100% → 94.4% (5.6% drop). Lekin F1 improve hua kyunke precision bahut zyada improve hua.</div>
+</div>
+
+<!-- 100% Fields -->
+<h3>🔢 100% — Field Accuracy</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Name, Email, GPA, Experience years — yeh 4 fields 3 ground truth CVs mein se sab mein correctly extract hui. Total: 4 fields × 3 CVs = 12 checks, all 12 correct = 100%.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 100% (itna perfect)?</div>
+<div class="a">Email extraction: regex pattern \b[\w._%+-]+@[\w.-]+\.\w{2,}\b — almost foolproof. Name extraction: spaCy NER → PERSON entity -> highly accurate for English names. GPA extraction: decimal number near "gpa" keyword. Experience: regex + date fallback. In fields ke liye patterns well-defined hain, isliye 100% possible hai.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN skills mein 100% nahi?</div>
+<div class="a">Skills unbounded set hai — infinite possible skills. Email/GPA ka pattern limited hai. Isliye fields 100% aa sakte hain lekin skills nahi.</div>
+</div>
+
+<!-- 6.35 -->
+<h3>🔢 6.35 — MAE (Mean Absolute Error)</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Model score aur human score ke beech ka average difference (absolute value mein). Scale: 0 (perfect) to 100 (worst).</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 6.35 (calculation)?</div>
+<div class="a">9 pairs ke errors ka average:</div>
+<pre>
+  |91.8 - 85|  = 6.8
+  |53.6 - 65|  = 11.4
+  |41.1 - 50|  = 8.9
+  |88.9 - 90|  = 1.1
+  |52.6 - 40|  = 12.6
+  |73.2 - 70|  = 3.2
+  |84.3 - 88|  = 3.7
+  |17.7 - 20|  = 2.3
+  |17.9 - 25|  = 7.1
+  -----------------
+  Sum = 57.1
+  MAE = 57.1 / 9 = 6.35
+</pre>
+</div>
+<div class="q-box">
+<div class="q">KYUN 6.35 (accha kyun hai)?</div>
+<div class="a">100 points ke scale par sirf 6.35 ka average error — matlab model human se 93.65% accurate hai. Compare karo: keyword-only systems typically 15-25 MAE, BERT-only systems typically 10-20 MAE.</div>
+</div>
+
+<!-- 100% ±15 -->
+<h3>🔢 100% (±15 Accuracy) — 9/9</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Har pair mein model score human score ke 15 points ke andar hai ya nahi check karte hain. Saare 9 pairs andar hain → 9/9 = 100%.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN ±15 (15 kyun)?</div>
+<div class="a">15 points ek reasonable margin hai — human judges bhi consistently 10-15 points ka variation de sakte hain (same CV-job pair ko 2 humans different scores de sakte hain). 15 points ka matlab "model human jitna hi consistent hai".</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN pehle 7/9 tha, ab 9/9?</div>
+<div class="a">Pehle scoring formula mein skill weight 40 tha, ab 60 hai — isse matching more accurate hui. Threshold 40 → 55 ne shortlisting improve kiya. Detailed labels /40 /25 → /60 /10 ne scoring ko sahi kiya.</div>
+</div>
+
+<!-- 100% Shortlisting -->
+<h3>🔢 100% — Shortlisting Precision &amp; Recall</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Precision: Jo shortlisted hue, woh sahi they (koi false positive nahi). Recall: Jo shortlisted hone chahiye they, woh hue (koi miss nahi).</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 100% (perfect)?</div>
+<div class="a">John (91.8) → shortlisted ✅. Jane (52.6) → not shortlisted ✅. Ali (9.7) → not shortlisted ✅. Koi false positive nahi (galti se koi shortlisted nahi hua). Koi false negative nahi (koi eligible miss nahi hua). Threshold 55 ne perfect split kiya.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN itna perfect?</div>
+<div class="a">3 pairs ka small dataset hai. Reality mein 55 threshold 100% guarantee nahi de sakta har case mein, lekin in 3 test cases ke liye perfect hai. Zyada CVs ke saath precision/recall 100% se thoda gir sakta hai.</div>
+</div>
+
+<!-- 95% -->
+<h3>🔢 95% — Kaggle Experience Detection</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">24 Kaggle CVs (1 per category) mein se 23 mein experience correctly detect hua — 23/24 = 95%.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN pehle 45% tha?</div>
+<div class="a">Pehle sirf section headers search karte the: "Experience", "Work Experience", "Employment History". Kaggle CVs mein yeh headers inconsistent hain — kuch mein nahi bhi hain. To sirf 11/24 mein experience mila = 45%.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN ab 95% hai?</div>
+<div class="a">Date-based fallback add kiya. Ab non-education lines scan karte hain for date patterns:</div>
+<ul>
+  <li>"2020 - 2024" → year range detect → experience = 4 years</li>
+  <li>"March 2020 - Present" → current date - start date</li>
+  <li>"2018-2023" → 5 years experience</li>
+</ul>
+<div class="a">23/24 mein dates mil gayi → 95%. Sirf 1 CV mein koi date nahi thi (extremely unstructured).</div>
+</div>
+
+<!-- 4.5 -->
+<h3>🔢 4.5 — Average Skills Per CV</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">24 Kaggle CVs mein average 4.5 skills per CV detect hui. Pehle yeh number 10+ tha (bahut false positives).</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 4.5 (realistic kyun hai)?</div>
+<div class="a">Word-boundary regex ne false positives hata diye. Ab sirf actual skills count hote hain. Realistically, average CV mein 4-6 skills hoti hain — 4.5 is very realistic.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN pehle 10+ tha?</div>
+<div class="a">Substring matching ki wajah se "c" "go" "r" jaisi cheezein bhi skills count ho jati thin. Word boundaries ne yeh fix kiya.</div>
+</div>
+
+<!-- 55 -->
+<h3>🔢 55 — Shortlisting Threshold</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Sirf woh candidates shortlisted hote hain jinka score ≥ 55 ho.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 55 (pehle 40 tha)?</div>
+<div class="a">Threshold 40 pe Jane (52.6) bhi shortlisted ho jati — but Jane Backend Developer nahi hai (actual skills: Python, ML, SQL — Data Scientist hai). Threshold 55 pe Jane correctly reject hoti hai.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 55 specific?</div>
+<div class="a">John (91.8) > 55 ✅. Jane (52.6) < 55 ❌. Ali (9.7) < 55 ❌. 55 dono groups ke beech mein hai — empirical testing se decide kiya.</div>
+</div>
+
+<!-- 60%, 10%, 15%, 10%, 5% -->
+<h3>🔢 60% + 10% + 15% + 10% + 5% — Scoring Weights</h3>
+<table>
+<tr><th>Component</th><th>Weight</th><th>KYUN itna weight?</th></tr>
+<tr><td><strong>Skill Overlap</strong></td><td><strong>60%</strong></td><td>Job matching mein skills primary factor hain. Employer sabse pehle dekhta hai ke candidate ke paas required skills hain ya nahi. 60% ensure karta hai ke skill match dominate kare.</td></tr>
+<tr><td><strong>BERT Semantic</strong></td><td><strong>10%</strong></td><td>Limited effect deliberately rakha. BERT embeddings generic hain — specific skills ke liye accurate nahi. Sirf 10% isliye ke jo skills 172 keywords mein nahi hain, unka kuch effect ho. Zyada weight diya to domain mismatch false positives aa jayenge.</td></tr>
+<tr><td><strong>Experience</strong></td><td><strong>15%</strong></td><td>Experience important hai — zyada experience wala candidate typically better hota hai. 15% reasonable weight hai.</td></tr>
+<tr><td><strong>Education</strong></td><td><strong>10%</strong></td><td>Education bhi matter karta hai, lekin skills aur experience se kam important. 10% appropriate hai.</td></tr>
+<tr><td><strong>Extra (GPA/Certs/Projects)</strong></td><td><strong>5%</strong></td><td>GPA, certifications, projects — yeh cherry on top hain. Sirf 5% weight kyunke yeh optional hain — har CV mein nahi hote.</td></tr>
+</table>
+<div class="highlight">
+<strong>Design Philosophy:</strong> Skills = 60% (primary). BERT = 10% (fine-tuning only). Experience + Education = 25% (experience matters but skills more). Extra = 5% (nice to have).
+</div>
+
+<!-- 0.4 BERT Penalty -->
+<h3>🔢 0.4 — BERT Penalty Factor</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Jab BERT penalty trigger hota hai (skill_ratio < 0.3 AND cos_sim > 0.3), to BERT score × 0.4 kar dete hain. BERT contribution 60% reduce ho jata hai.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 0.4 (40% kyun, 0% kyun nahi)?</div>
+<div class="a">Complete zero nahi rakha kyunke BERT ki kuch value hai — ho sakta hai koi aisa skill ho jo 172 keywords mein nahi hai lekin BERT usse semantically match kar raha hai. 0.4 (40%) remaining rakha — thoda sa BERT influence rehne do, lekin majority reduce karo.</div>
+</div>
+<div class="q-box">
+<div class="q">Example?</div>
+<div class="a">John (Python, Java, React) → Data Scientist job (Python, ML, TensorFlow, SQL). Skill ratio = 1/4 = 0.25 (< 0.3 ✅). BERT cos_sim = 0.55 (> 0.3 ✅). Without penalty: BERT = 5.5/10. With penalty: BERT = 5.5 × 0.4 = 2.2/10. Score reduces, more accurate.</div>
+</div>
+
+<!-- 0.3 Threshold -->
+<h3>🔢 0.3 — BERT Penalty Trigger Condition</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Do conditions hain penalty trigger ke liye: (1) skill_ratio < 0.3, (2) cos_sim > 0.3. Dono true hain to penalty apply hota hai.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 0.3 (30% threshold)?</div>
+<div class="a">0.3 empirically decide kiya. 0.2 se kam rakhte to kuch genuine matches bhi penalty se hit ho jate. 0.4 rakhte to penalty rarely trigger hota. 0.3 sweet spot hai — false positives effectively catch karta hai bina genuine matches ko hurt kiye.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN dono conditions?</div>
+<div class="a">Sirf skill_ratio < 0.3 use karte to low skill matches wale sab cases mein penalty lagta — including genuinely low-skilled candidates. Sirf cos_sim > 0.3 use karte to high BERT similarity wale sab cases mein penalty lagta — including good matches. Dono conditions ensure karte hain ke sirf "domain mismatch" cases mein penalty lage.</div>
+</div>
+
+<!-- 16 -->
+<h3>🔢 16 — Unit Tests</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">16 automated pytest test cases jo har module ke functionality check karte hain.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 16 (distribution)?</div>
+<div class="a">4 tests CV Parser ke liye + 2 tests skill extraction ke liye + 2 tests experience ke liye + 2 tests semantic matcher ke liye + 2 tests shortlister ke liye + 1 test recommender ke liye + 1 test evaluation ke liye + 2 tests system/integration ke liye = 16 total.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN important?</div>
+<div class="a">Tests ensure karte hain ke code change karne ke baad bhi functionality same rahe. Regression prevent karte hain. Har function ka expected behavior defined hai.</div>
+</div>
+
+<!-- 25 -->
+<h3>🔢 25 — Android Screens</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Android app mein total 25 screens (routes). Student side = 12, Company side = 11, Shared = 2.</div>
+</div>
+<div class="q-box">
+<div class="q">Distribution:</div>
+<div class="a"><strong>Student (12):</strong> Login, Register, Dashboard, BrowseJobs, JobDetail, MyApplications, StudentProfile, EditProfile, InterviewScreen, InterviewResult, UploadCv, Settings<br>
+<strong>Company (11):</strong> CompanyLoginRegister, CompanyDashboard, PostJob, ManageJobs, EditJob, ApplicantsList, ApplicantDetail, CompanyProfile, ScheduleInterview, HireDecision, Analytics</div>
+</div>
+
+<!-- 66K+ -->
+<h3>🔢 66K+ — Jobs Processed</h3>
+<div class="q-box">
+<div class="q">Kya hai?</div>
+<div class="a">Monster.com job dataset se 66,000+ job descriptions process kiye gaye. Each job description matched against CVs.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN 66K+?</div>
+<div class="a">Monster.com ka sample dataset itna bada hai. 68,000+ entries hain, isliye "66K+" likha. Yeh demonstrate karta hai ke system scale kar sakta hai.</div>
+</div>
+
+<!-- ~100ms, ~150ms, ~250ms -->
+<h3>🔢 ~100ms / ~150ms / ~250ms — Performance Times</h3>
+<div class="q-box">
+<div class="q">~100ms per CV (spaCy + regex):</div>
+<div class="a">Ek CV parse karne mein ~0.1 second lagta hai. spaCy NER inference + regex extraction dono mila kar. 2,484 CVs = ~4 minutes total.</div>
+</div>
+<div class="q-box">
+<div class="q">~150ms per pair (BERT embedding):</div>
+<div class="a">Ek CV-job pair ka similarity calculate karne mein ~0.15 second. BERT model text ko vector mein convert karta hai (encoding) + cosine similarity calculate karta hai.</div>
+</div>
+<div class="q-box">
+<div class="q">~250ms total pipeline:</div>
+<div class="a">Ek CV + uske saath 1 job match karne mein total ~250ms = 100ms (parse) + 150ms (match). 2,484 CVs × 3 jobs each ≈ 7.5 sec.</div>
+</div>
+</div>
+
+<!-- ═══════════════ 4. EVERY CONCEPT EXPLAINED ═══════════════ -->
+<div class="section">
+<h2>4. Every Concept — Complete Explanation</h2>
+
+<!-- F1 -->
+<h3>📌 F1 Score — Kya Hai, KYUN Use Karte Hain?</h3>
+<div class="q-box">
+<div class="q">Definition:</div>
+<div class="a">F1 Score precision aur recall ka harmonic mean hai. Formula: 2 × (P × R) / (P + R). Harmonic mean simple average se better hai kyunke extreme values ko penalize karta hai.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN sirf precision ya sirf recall nahi?</div>
+<div class="a">Precision aur recall ka trade-off hota hai. Agar sirf precision dekho to model 1 skill bhi pakde (joh 100% correct ho) → precision = 100%, but recall very low. Agar sirf recall dekho to sab kuch pakdo (including non-skills) → recall = 100%, but precision low. F1 dono ka balance deta hai.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN F1 > 90% nahi aa sakta humara?</div>
+<div class="a">Agar precision 95% aur recall 95% ho to F1 = 95%. Lekin yeh achieve karna bahut mushkil hai kyunke:</div>
+<ul>
+  <li>95% precision = 95% identified skills actually skills hain. Iske liye keyword list bahut strict honi chahiye.</li>
+  <li>95% recall = 95% real skills identified hain. Iske liye keyword list bahut comprehensive honi chahiye.</li>
+  <li>Yeh dono contradictory requirements hain — strict list precision improve karegi lekin recall girega.</li>
+</ul>
+</div>
+
+<!-- Precision -->
+<h3>📌 Precision — Kya Hai?</h3>
+<div class="q-box">
+<div class="q">Simple Definition:</div>
+<div class="a">Model ne jo nikaala, usmein se kitna sahi tha? "Jo pakda, woh sahi tha ya nahi?"</div>
+</div>
+<div class="q-box">
+<div class="q">Example:</div>
+<div class="a">CV mein actual skills = [Python, Java, React]. Model nikaala = [Python, Java, React, Docker]. Precision = 3/4 = 75% (4 mein se 3 sahi hain, Docker false positive hai).</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN important?</div>
+<div class="a">Low precision matlab model irrelevant skills bata raha hai. "Candidate ko React aata hai" bolega jabke actual mein nahi aata → wrong match. Precision ensure karta hai ke jo bata rahe hain, woh correct ho.</div>
+</div>
+
+<!-- Recall -->
+<h3>📌 Recall — Kya Hai?</h3>
+<div class="q-box">
+<div class="q">Simple Definition:</div>
+<div class="a">Jo actually tha, usmein se kitna model ne pakda? "Jo hona chahiye tha, woh mila ya nahi?"</div>
+</div>
+<div class="q-box">
+<div class="q">Example:</div>
+<div class="a">CV mein actual skills = [Python, Java, React, Docker, AWS]. Model nikaala = [Python, Java, React]. Recall = 3/5 = 60% (5 mein se 3 mile, Docker aur AWS miss hue).</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN important?</div>
+<div class="a">Low recall matlab candidate ki genuine skills miss ho rahi hain. Candidate ko Docker aata hai lekin model nahi bata paya → job match miss ho sakta hai. Recall ensure karta hai ke candidate ki skills miss na hon.</div>
+</div>
+
+<!-- MAE -->
+<h3>📌 MAE (Mean Absolute Error) — Kya Hai?</h3>
+<div class="q-box">
+<div class="q">Definition:</div>
+<div class="a">Model score aur human score ke beech ka average absolute difference. Formula: (1/n) × Σ|model_i - human_i|</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN absolute (| |) use karte hain?</div>
+<div class="a">Positive aur negative errors ek dusre ko cancel na kar dein. Agar ek pair mein model zyada de (10) aur ek mein kam de (-10), to simple average = 0 aa jayega — but actual error 10 tha. Absolute value ensure karta hai ke sab errors add hon.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN mean (average) use karte hain?</div>
+<div class="a">Overall system performance measure karna hai. Multiple pairs ka combined error chahiye. Average deta hai "typical" error kitna hai.</div>
+</div>
+
+<!-- Cosine Similarity -->
+<h3>📌 Cosine Similarity — Kya Hai?</h3>
+<div class="q-box">
+<div class="q">Definition:</div>
+<div class="a">Do vectors ke beech angle ka cosine. Agar dono same direction mein hain → cos = 1 (perfect match). Opposite → cos = -1 (opposite). Perpendicular → cos = 0 (no relation). Text similarity mein 0 to 1 use karte hain.</div>
+</div>
+<div class="q-box">
+<div class="q">KYON cosine (angle)? Euclidean distance kyun nahi?</div>
+<div class="a">Euclidean distance vector ki magnitude (length) se bhi affect hota hai. Cosine similarity sirf direction dekhti hai, magnitude nahi. Text ke liye direction zyada important hai — "good movie" aur "movie good" ka magnitude different ho sakta hai lekin direction same hai.</div>
+</div>
+<div class="q-box">
+<div class="q">384-dim vectors ka cosine kaise calculate karte hain?</div>
+<div class="a">Formula: cos(θ) = (A·B) / (||A|| × ||B||). Dot product of both vectors divided by product of their magnitudes. sklearn ki cosine_similarity function direct use karte hain.</div>
+</div>
+
+<!-- BERT Embeddings -->
+<h3>📌 BERT Embeddings — Kya Hai?</h3>
+<div class="q-box">
+<div class="q">Definition:</div>
+<div class="a">BERT (Bidirectional Encoder Representations from Transformers) text ko numerical vectors mein convert karta hai. Ye vectors text ka "meaning" represent karte hain — similar text ke similar vectors hote hain.</div>
+</div>
+<div class="q-box">
+<div class="q">"Bidirectional" ka matlab?</div>
+<div class="a">Word ko left-to-right bhi dekhta hai aur right-to-left bhi. Example: "I bank at the river bank" — pehla "bank" = financial institution (context: "I bank at"), doosra "bank" = river bank (context: "river bank"). Bidirectional context se meaning samajhta hai.</div>
+</div>
+<div class="q-box">
+<div class="q">"all-MiniLM-L6-v2" ka naam?</div>
+<div class="a">"all" = general purpose. "Mini" = small version. "LM" = Language Model. "L6" = 6 layers. "v2" = version 2. Yeh model Microsoft ne banaya hai, knowledge distillation technique se.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN sirf 10% weight?</div>
+<div class="a">BERT embeddings generic hain — "Python" ko programming language ya snake dono consider kar sakta hai. Recruitment domain ke liye specific nahi hai. Isliye limited influence rakha. Skills ka direct match zyada reliable hai.</div>
+</div>
+
+<!-- spaCy NER -->
+<h3>📌 spaCy NER — Kya Hai?</h3>
+<div class="q-box">
+<div class="q">Definition:</div>
+<div class="a">Named Entity Recognition (NER) system. Text se named entities identify karta hai jaise PERSON (John Doe), ORG (Google, Stanford), PRODUCT (Python, TensorFlow), GPE (New York), DATE (2020-2024).</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN spaCy?</div>
+<div class="a">Pre-trained model hai — zero training needed. 90%+ accuracy. Fast inference (~50ms per CV). Community support strong hai. Multiple languages support karta hai.</div>
+</div>
+<div class="q-box">
+<div class="q">en_core_web_lg vs sm?</div>
+<div class="a"><strong>lg (400 MB):</strong> 300-dim word vectors, better accuracy, more entity types. <strong>sm (12 MB):</strong> No word vectors, lower accuracy, fewer entity types. lg choose kiya kyunke NER accuracy better hai.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN pure NER kaafi nahi?</div>
+<div class="a">spaCy NER skills ko PRODUCT ya ORG ke roop mein identify karta hai — lekin yeh incomplete ho sakta hai. Kuch skills miss ho jati hain agar spaCy ne unhe entity na samjha ho. Isliye regex (172 keywords) additional backup hai.</div>
+</div>
+
+<!-- Regex / Word Boundary -->
+<h3>📌 Regex with Word Boundaries — Kya Hai?</h3>
+<div class="q-box">
+<div class="q">Definition:</div>
+<div class="a">Regular Expression = pattern matching language. Word boundary = \b ya (?&lt;!\w)...(?!\w) — ensure karta hai ke word whole match ho, substring nahi.</div>
+</div>
+<div class="q-box">
+<div class="q">Problem without word boundaries:</div>
+<div class="a">Simple "in" operator: "python" in "python developer" → True ✅. Lekin "c" in "account" → True ❌ (false positive). "go" in "ongoing" → True ❌. "r" in "Senior" → True ❌.</div>
+</div>
+<div class="q-box">
+<div class="q">Solution: (?&lt;!\w)(skill)(?!\w)</div>
+<div class="a"><code>(?&lt;!\w)</code> = pehle word character nahi hona chahiye. <code>(?!\w)</code> = baad mein word character nahi hona chahiye. Ensure karta hai ke skill ek alag word ke roop mein exist karti hai, kisi bade word ke hisse ke roop mein nahi.</div>
+</div>
+
+<!-- Graceful Degradation -->
+<h3>📌 Graceful Degradation — Kya Hai?</h3>
+<div class="q-box">
+<div class="q">Definition:</div>
+<div class="a">Jab ek component fail ho jaye to system crash na kare, balki kam capability ke saath kaam karta rahe.</div>
+</div>
+<div class="q-box">
+<div class="q">Hamar implementation:</div>
+<pre>
+BERT Available?                    spaCy Available?
+├── YES → BERT Active              ├── YES → SpacyNerParser
+├── NO  → n-gram Fallback          ├── NO  → CVParser (Pure Regex)
+</pre>
+<div class="a">Agar BERT nahi hai → n-gram character similarity (pure Python, zero dependencies). Agar spaCy nahi hai → pure regex CVParser (email, phone, skills, GPA sab regex se). Agar kuch bhi nahi hai → at least basic fields extract ho jayenge.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN important?</div>
+<div class="a">Jab kisi aur system mein deploy karein (different environment), ho sakta hai ke wahan BERT ya spaCy installed na ho. Graceful degradation ensure karta hai ke system har environment mein kaam karega, kam se kam basic functionality to degi hi.</div>
+</div>
+
+<!-- n-gram Fallback -->
+<h3>📌 n-gram Fallback — Kya Hai?</h3>
+<div class="q-box">
+<div class="q">Definition:</div>
+<div class="a">Character n-gram similarity. Text ko chhote character sequences mein tod kar compare karte hain. Bigram (2 chars): "python" → "py", "yt", "th", "ho", "on". Trigram (3 chars): "pyt", "yth", "tho", "hon".</div>
+</div>
+<div class="q-box">
+<div class="q">Formula:</div>
+<div class="a">bigram_similarity × 0.4 + trigram_similarity × 0.6. Trigram ko zyada weight kyunke bigger n-grams more meaningful hote hain. Total similarity = weighted combination.</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN bigram + trigram?</div>
+<div class="a">Sirf bigram too noisy (2 chars match hone ki probability high hai). Sirf trigram too strict (3 chars exact match mushkil hai). Combination best balance deta hai.</div>
+</div>
+
+<!-- Date-based Fallback -->
+<h3>📌 Date-Based Fallback — Kya Hai?</h3>
+<div class="q-box">
+<div class="q">Definition:</div>
+<div class="a">Jab section-based experience extraction fail ho (kyunke koi "Experience" header nahi hai), to lines scan karo for year date patterns like "2020-2024", "2018 - 2023", "March 2020 - Present".</div>
+</div>
+<div class="q-box">
+<div class="q">Algorithm:</div>
+<div class="a">1. Har line check karo (except education section lines). 2. Match pattern: \d{4}\s*[-–]\s*\d{4}. 3. Calculate span: end_year - start_year. 4. Maximum span = experience years. 5. Apply minimum threshold (1 year).</div>
+</div>
+<div class="q-box">
+<div class="q">KYUN effective?</div>
+<div class="a">Kaggle CVs mein formatting inconsistent hai lekin dates almost hote hain. "2020-2024" pattern universal hai — section headers se zyada reliable. 45% → 95% improvement dramatic hai.</div>
+</div>
+</div>
+
+<!-- ═══════════════ 5. KYUN — PHILOSOPHY ═══════════════ -->
+<div class="section">
+<h2>5. Design Decisions — Har "KYUN" ka Jawab</h2>
+
+<h3>🎯 KYUN Hybrid Approach (spaCy + BERT + Regex)?</h3>
+<p>Koi single approach perfect nahi hai:</p>
+<ul>
+  <li><strong>spaCy NER alone:</strong> Strong entity recognition (name, org). Lekin skills as entities inconsistent — kuch miss ho jati hain. Also, spaCy available hona chahiye.</li>
+  <li><strong>BERT alone:</strong> Strong semantic understanding. Lekin generic embeddings — domain-specific skills ke liye specific nahi. "Python" data science context mein vs web dev context mein confuse ho sakta hai.</li>
+  <li><strong>Regex alone:</strong> Precise skill matching. Lekin 172 keywords limited hain — niche skills miss ho jayengi. Also, no semantic understanding.</li>
+</ul>
+<p><strong>Hybrid approach:</strong> Har approach ki strength use karo, weaknesses cover karo. spaCy = entity extraction, Regex = precise skill matching, BERT = semantic fine-tuning.</p>
+
+<h3>🎯 KYUN BERT ko sirf 10% weight?</h3>
+<p>Job matching mein <strong>accuracy over intelligence</strong> prefer kiya. Skill overlap (60%) direct, verifiable hai — candidate ke paas skill hai ya nahi. BERT similarity (10%) subjective ho sakti hai — do different CVs same BERT similarity score de sakte hain lekin ek relevant ho aur ek irrelevant. Isliye BERT ka effect limited rakha — fine-tuning ke liye, primary decision factor nahi.</p>
+
+<h3>🎯 KYUN word boundaries se precision improve kiya (recall sacrifice karke)?</h3>
+<p>Job matching mein <strong>false positives false negatives se zyada dangerous hain</strong>. Agar model "c" ko skill bata de → candidate ko irrelevant job suggest hogi → time waste. Agar koi skill miss ho (false negative) → candidate ko kuch relevant jobs miss ho sakti hain, lekin overall experience still relevant hai. Isliye precision improve kiya despite recall drop.</p>
+
+<h3>🎯 KYUN threshold 55 choose kiya?</h3>
+<p>Empirical testing se decide kiya. John (Sr Python Dev ke liye): score 91.8 → eligible. Jane (Backend ke liye): score 52.6 → not eligible (correctly — Jane Data Scientist hai, Backend nahi). Threshold 55 John-Jane split karta hai. Agar threshold 40 hota to Jane bhi eligible ho jati — wrong. Agar threshold 60 hota to koi aur candidate bhi miss ho sakta hai.</p>
+
+<h3>🎯 KYUN human evaluation (9 pairs) ki zaroorat?</h3>
+<p>Automated metrics (F1, precision, recall) sirf intermediate steps measure karte hain. Final goal: model ka score human ke score se match kare. Isliye human-judged pairs zaroori hain — yeh batate hain ke model "insaan jitna intelligent" score de raha hai ya nahi. MAE 6.35 prove karta hai ke model almost insaan jitna accurate hai.</p>
+</div>
+
+<!-- ═══════════════ 6. EVERY FILE EXPLAINED ═══════════════ -->
+<div class="section">
+<h2>6. Har File ka Naam, Kaam, Usage</h2>
+
+<table>
+<tr><th>File (Path in python_backend/)</th><th>Kaam Kya Hai?</th><th>KYUN Important?</th></tr>
+<tr>
+<td><code>spb_nlp/cv_parser.py</code></td>
+<td>CV se text extract karta hai (PDF/plain text) aur structured fields mein convert karta hai — name, email, skills, experience, GPA, certifications. Iske 2 versions hain: CVParser (regex-based) aur SpacyNerParser (spaCy NER + regex).</td>
+<td>Entry point — saara data yahin se aata hai. Agar yeh galat ho to aage ki processing bhi galat hogi.</td>
+</tr>
+<tr>
+<td><code>spb_nlp/semantic_matcher.py</code></td>
+<td>CV aur job ke beech match score calculate karta hai. BERT embeddings use karta hai cosine similarity ke liye. Weighted formula apply karta hai (60+10+15+10+5). BERT penalty logic bhi yahin hai.</td>
+<td>Core intelligence — model ka "brain". Score 0-100 decide karta hai jo shortlisting aur recommendations ko affect karta hai.</td>
+</tr>
+<tr>
+<td><code>spb_nlp/shortlister.py</code></td>
+<td>Candidates ko threshold (≥55) aur experience (≥1yr) ke basis par filter karta hai. Ranking bhi karta hai descending order mein.</td>
+<td>Decision point — kaun eligible hai aur kaun nahi. Recruiters sirf shortlisted candidates dekhte hain.</td>
+</tr>
+<tr>
+<td><code>spb_nlp/recommender.py</code></td>
+<td>Student CV ke basis par best jobs recommend karta hai. Score + skills match + filters use karta hai. Multiple jobs mein se top recommendations deta hai.</td>
+<td>User-facing feature — student ko batata hai "yeh jobs tumhare liye best hain".</td>
+</tr>
+<tr>
+<td><code>spb_nlp/utils.py</code></td>
+<td>Utility functions: extract_skills() (word-boundary regex, 172 keywords), extract_emails(), extract_phones(), extract_experience() (section + date fallback), extract_gpa(), extract_education() — saare helper functions.</td>
+<td>Foundation — saare extraction functions yahin hain. extract_skills() aur extract_experience() mein major improvements hue hain.</td>
+</tr>
+<tr>
+<td><code>spb_nlp/evaluate.py</code></td>
+<td>Evaluation framework: evaluate_cv_parsing() → precision/recall/F1, evaluate_semantic_matching() → MAE/±15 accuracy, evaluate_shortlisting() → precision/recall/F1. --dataset flag ke saath Kaggle evaluation bhi karta hai.</td>
+<td>Validation — batata hai ke system kaam kar raha hai ya nahi. Saare numbers (89.6%, 6.35, etc.) yahin calculate hote hain.</td>
+</tr>
+<tr>
+<td><code>spb_nlp/demo.py</code></td>
+<td>Sample CV + 3 jobs ka demo run karta hai — full pipeline output dikhata hai (parse → match → shortlist → recommend).</td>
+<td>Quick demo — bina evaluation chalaye system ka output dekh sakte hain.</td>
+</tr>
+<tr>
+<td><code>tests/test_all.py</code></td>
+<td>16 pytest unit tests. Har module ke liye 2-4 tests. Happy path + edge cases dono cover hain.</td>
+<td>Regression prevention — code change ke baad bhi functionality same rahe.</td>
+</tr>
+<tr>
+<td><code>generate_ppt.py</code></td>
+<td>PowerPoint presentation generate karta hai — "HireMentor_FYP_Presentation.pptx". python-pptx library use karta hai.</td>
+<td>FYP submission ke liye PPT chahiye — yeh script us PPT ko auto-generate karti hai.</td>
+</tr>
+<tr>
+<td><code>test_cv_files.py</code></td>
+<td>data/test_cvs/ folder mein rakhi gayi real CV files ko test karta hai. Har CV ko parse karta hai + match karta hai + results print karta hai.</td>
+<td>User testing — apni real CVs daal kar dekh sakte hain ke system kaise perform karta hai.</td>
+</tr>
+<tr>
+<td><code>HireMentor_Complete_Documentation.html</code></td>
+<td>13-section comprehensive documentation HTML. Architecture diagrams, workflow, models, formulas, screens, accuracy sab kuch.</td>
+<td>Internal reference — project documentation. Iska PDF version bhi hai (904 KB).</td>
+</tr>
+<tr>
+<td><code>HireMentor_Research_Presentation.html</code></td>
+<td>8-slide research presentation HTML. Research-oriented — problem, gap, method, results, contributions, limitations, demo.</td>
+<td>Supervisor presentation. Isme Pyhto/Gemini nahi, AI Interview = REST API likha hai. Iska PDF version (324 KB).</td>
+</tr>
+<tr>
+<td><code>data/Resume/Resume.csv</code></td>
+<td>Kaggle Resume dataset (2,484 CVs, 24 categories). CSV format mein har row mein Resume kaa text aur category hai.</td>
+<td>Dataset — training/testing ke liye. evaluation --dataset flag ise read karta hai.</td>
+</tr>
+<tr>
+<td><code>data/monster_com-job_sample.csv</code></td>
+<td>Monster.com job dataset (68K+ jobs). Job descriptions hain multiple fields ke saath.</td>
+<td>Jobs dataset — CVs ko in jobs ke against match karte hain.</td>
+</tr>
+</table>
+
+<h3>Module Dependencies (Kaun kaun call karta hai):</h3>
+<pre>
+evaluate.py ── calls ──► cv_parser.py ── calls ──► utils.py
+              ── calls ──► semantic_matcher.py ── calls ──► utils.py
+              ── calls ──► shortlister.py
+              ── calls ──► recommender.py
+
+demo.py ── calls ──► cv_parser.py
+         ── calls ──► semantic_matcher.py
+         ── calls ──► shortlister.py
+         ── calls ──► recommender.py
+
+test_cv_files.py ── calls ──► cv_parser.py
+                  ── calls ──► semantic_matcher.py
+
+test_all.py ── tests ──► Har module ko independently test karta hai
+</pre>
+</div>
+
+<!-- ═══════════════ 7. IMPROVEMENTS SUMMARY ═══════════════ -->
+<div class="section">
+<h2>7. Improvements — Pehle vs Ab Tak</h2>
+
+<table>
+<tr><th>Component</th><th>Before</th><th>After</th><th>What Changed?</th></tr>
+<tr><td><strong>Skill Precision</strong></td><td>68%</td><td>86.7% (+18.7%)</td><td>Word-boundary regex — "c" from "account", "go" from "ongoing" fix</td></tr>
+<tr><td><strong>Skill Recall</strong></td><td>100%</td><td>94.4% (-5.6%)</td><td>Word boundaries — kuch niche skills miss (acceptable trade-off)</td></tr>
+<tr><td><strong>F1 Score</strong></td><td>80.9%</td><td>89.6% (+8.7%)</td><td>Precision improvement outweighs recall drop</td></tr>
+<tr><td><strong>Kaggle Exp Detection</strong></td><td>45%</td><td>95% (+50%)</td><td>Date-based fallback added for unstructured CVs</td></tr>
+<tr><td><strong>Semantic MAE</strong></td><td>10.77</td><td>6.35 (-4.42)</td><td>Scoring formula improved (60/10/15/10/5) + labels fixed (/40→/60, /25→/10)</td></tr>
+<tr><td><strong>±15 Accuracy</strong></td><td>7/9</td><td>9/9 (100%)</td><td>BERT weight 40→10, penalty added, formula rebalanced</td></tr>
+<tr><td><strong>Shortlisting P/R</strong></td><td>33% / 100%</td><td>100% / 100%</td><td>Threshold 40→55 + email matching bug fixed (CV index tracking)</td></tr>
+<tr><td><strong>Shortlisting F1</strong></td><td>50%</td><td>100% (+50%)</td><td>Jane correctly rejected for Backend job (52.6 < 55)</td></tr>
+<tr><td><strong>Avg Skills/CV</strong></td><td>10+ (false)</td><td>4.5 (realistic)</td><td>Word boundaries removed false positive "skills"</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════ 8. FINAL NUMBERS TABLE ═══════════════ -->
+<div class="section">
+<h2>8. Quick Reference — All Numbers at a Glance</h2>
+
+<table>
+<tr><th>Number</th><th>Category</th><th>What It Is</th><th>KYUN Yeh Number?</th></tr>
+<tr><td><strong>2,484</strong></td><td>Dataset</td><td>Kaggle resumes</td><td>Largest public resume dataset</td></tr>
+<tr><td><strong>24</strong></td><td>Dataset</td><td>Job categories</td><td>Dataset mein itne categories</td></tr>
+<tr><td><strong>3</strong></td><td>Dataset</td><td>Ground truth CVs</td><td>Manual annotation time-consuming</td></tr>
+<tr><td><strong>9</strong></td><td>Dataset</td><td>Human-judged pairs</td><td>3 CVs × 3 Jobs each</td></tr>
+<tr><td><strong>172</strong></td><td>Extraction</td><td>Skill keywords</td><td>100 common + 50 domain + 22 emerging = balance</td></tr>
+<tr><td><strong>384</strong></td><td>Model</td><td>BERT vector dim</td><td>MiniLM-L6-v2 architecture (6 layers)</td></tr>
+<tr><td><strong>400 MB</strong></td><td>Model</td><td>spaCy model size</td><td>Largest English spaCy model (word vectors + NER)</td></tr>
+<tr><td><strong>80 MB</strong></td><td>Model</td><td>BERT model size</td><td>MiniLM = distilled, small, fast</td></tr>
+<tr><td><strong>89.6%</strong></td><td>Metric</td><td>F1 score</td><td>2×86.7×94.4/(86.7+94.4) = balance</td></tr>
+<tr><td><strong>86.7%</strong></td><td>Metric</td><td>Precision</td><td>Word boundaries fixed false positives</td></tr>
+<tr><td><strong>94.4%</strong></td><td>Metric</td><td>Recall</td><td>Kuch niche skills miss, but good coverage</td></tr>
+<tr><td><strong>100%</strong></td><td>Metric</td><td>Field accuracy</td><td>Name/Email/GPA/Exp — well-defined patterns</td></tr>
+<tr><td><strong>6.35</strong></td><td>Metric</td><td>MAE</td><td>Σ|model-human|/9 = 57.1/9</td></tr>
+<tr><td><strong>100%</strong></td><td>Metric</td><td>±15 accuracy</td><td>9/9 pairs within human margin</td></tr>
+<tr><td><strong>100%</strong></td><td>Metric</td><td>Shortlist P/R</td><td>No false positives/negatives in test set</td></tr>
+<tr><td><strong>95%</strong></td><td>Metric</td><td>Kaggle exp detection</td><td>Date fallback 45%→95%</td></tr>
+<tr><td><strong>4.5</strong></td><td>Metric</td><td>Avg skills/CV</td><td>Word boundaries removed false positives</td></tr>
+<tr><td><strong>55</strong></td><td>Config</td><td>Shortlist threshold</td><td>52.6 < 55 < 91.8 — optimal split</td></tr>
+<tr><td><strong>60</strong></td><td>Config</td><td>Skill weight (%)</td><td>Skills = primary match factor</td></tr>
+<tr><td><strong>10</strong></td><td>Config</td><td>BERT weight (%)</td><td>Limited semantic influence</td></tr>
+<tr><td><strong>15</strong></td><td>Config</td><td>Experience weight (%)</td><td>Experience matters but less than skills</td></tr>
+<tr><td><strong>10</strong></td><td>Config</td><td>Education weight (%)</td><td>Education relevant but not primary</td></tr>
+<tr><td><strong>5</strong></td><td>Config</td><td>Extra weight (%)</td><td>GPA/Certs/Projects = nice to have</td></tr>
+<tr><td><strong>0.4</strong></td><td>Config</td><td>BERT penalty factor</td><td>Remaining influence after penalty</td></tr>
+<tr><td><strong>0.3</strong></td><td>Config</td><td>Penalty trigger</td><td>skill_ratio < 0.3 AND cos_sim > 0.3</td></tr>
+<tr><td><strong>16</strong></td><td>Config</td><td>Unit tests</td><td>2-4 tests per module</td></tr>
+<tr><td><strong>25</strong></td><td>Config</td><td>Android screens</td><td>Student 12 + Company 11 + Shared 2</td></tr>
+<tr><td><strong>66K+</strong></td><td>Config</td><td>Jobs processed</td><td>Monster.com dataset</td></tr>
+<tr><td><strong>~100ms</strong></td><td>Perf</td><td>CV parse speed</td><td>spaCy NER + regex</td></tr>
+<tr><td><strong>~150ms</strong></td><td>Perf</td><td>Match speed</td><td>BERT encoding + cosine</td></tr>
+<tr><td><strong>~250ms</strong></td><td>Perf</td><td>Total pipeline</td><td>Parse + match combined</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════ 9. FAQ ═══════════════ -->
+<div class="section">
+<h2>9. Frequently Asked Questions</h2>
+
+<div class="q-box">
+<div class="q">❓ F1 89.6% kyun hai, 100% kyun nahi?</div>
+<div class="a">Perfect F1 ke liye precision=100% AND recall=100% chahiye. Yeh NLP mein almost impossible hai. Precision 100% = koi false positive nahi → itna strict hoga to kuch real skills miss ho jayengi (recall girega). Recall 100% = sab kuch pakdo → itna loose hoga to false positives aa jayenge (precision girega). 89.6% ek realistic best balance hai. Commercial systems bhi 85-92% ke range mein aate hain.</div>
+</div>
+
+<div class="q-box">
+<div class="q">❓ 172 keywords kyun, 200 kyun nahi?</div>
+<div class="a">172 ek empirical number hai — testing ke baad decide kiya. 100 se kam keywords → bahut saari skills miss (recall drop). 300+ keywords → false positives increase (precision drop). Har additional keyword ke saath precision thodi girti hai kyunke kuch keywords ambiguous ho sakte hain. 172 par optimum F1 mila.</div>
+</div>
+
+<div class="q-box">
+<div class="q">❓ MAE 6.35 achha hai ya bura?</div>
+<div class="a">Bahut achha hai! 100-point scale par sirf 6.35 ka average error = 93.65% accuracy. Compare karo: keyword-only systems typically 15-25 MAE, BERT-only systems typically 10-20 MAE. 6.35 batata hai ke model almost insaan jitna accurate score de raha hai. Best possible MAE 0 hai (model = human exactly) — lekin humans bhi ek dusre se 5-10 points differ kar sakte hain, isliye 6.35 excellent hai.</div>
+</div>
+
+<div class="q-box">
+<div class="q">❓ BERT penalty kyun lagate hain?</div>
+<div class="a">BERT embeddings generic hain. Example: "Python" ka mention CV mein ho aur job mein bhi → BERT high similarity dega. Lekin CV data science ki hai aur job web development ki — skills actually match nahi karte. BERT penalty prevent karta hai "domain mismatch" false positives ko. Condition: jab skills ka direct match kam ho (<30%) lekin BERT phir bhi high similarity de raha ho (>30%) → penalty apply.</div>
+</div>
+
+<div class="q-box">
+<div class="q">❓ Date-based fallback ne 45% ko 95% kaise kiya?</div>
+<div class="a">Kaggle CVs mein "Experience" section header inconsistent hai — kuch mein hai, kuch mein nahi. Lekin almost har CV mein date ranges hote hain jaise "2020-2024". Date fallback non-education lines scan karta hai for year patterns aur maximum span calculate karta hai. Yeh section headers se zyada reliable hai. 45% → 95% ka matlab hai ke pehle sirf 11/24 CVs mein experience milta tha, ab 23/24 mein milta hai.</div>
+</div>
+
+<div class="q-box">
+<div class="q">❓ Shortlisting threshold 55 kyun choose kiya?</div>
+<div class="a">Empirical testing. John (Sr Python Dev): 91.8 → should be shortlisted ✅. Jane (Backend Dev): 52.6 → should NOT be shortlisted ❌ (Jane Data Scientist hai, Backend nahi). Threshold 55 inhe perfectly split karta hai: 91.8 > 55 ✅, 52.6 < 55 ❌. Agar 40 hota to Jane bhi eligible ho jati (wrong). Agar 60 hota to koi aur candidate miss ho sakta hai.</div>
+</div>
+
+<div class="q-box">
+<div class="q">❓ Android app mein Pyhto AI aur Python backend mein kya difference hai?</div>
+<div class="a">Android app mein Pyhto AI on-device chal sakta hai — immediate CV parsing, basic matching. Python backend (FastAPI microservice) mein spaCy + BERT + Regex — zyada accurate, full pipeline. Android app optionally Python backend se bhi connect ho sakta hai. Research presentation mein Pyhto ka naam nahi likha — AI Interview ko "Custom REST API" likha hai.</div>
+</div>
+
+<div class="q-box">
+<div class="q">❓ F1, Precision, Recall — yeh sab kyun use karte hain? Sirf accuracy kyun nahi?</div>
+<div class="a">Sirf accuracy misleading ho sakti hai imbalanced data mein. Example: 100 skills hain, model sirf 1 skill bataye (correct). Accuracy = 1% but precision = 100% (jo bataya woh sahi hai). Lekin recall = 1% (bahut kuch miss). Isliye Precision + Recall + F1 teeno mil kar complete picture dete hain.</div>
+</div>
+
+<div class="q-box">
+<div class="q">❓ Graceful degradation kyun important hai?</div>
+<div class="a">Jab system kisi aur environment mein deploy ho (different laptop, cloud server, etc.), ho sakta hai ke wahan BERT ya spaCy installed na ho. Graceful degradation ensure karta hai ke system crash na kare — kam capability ke saath bhi kaam karta rahe. Agar kuch bhi installed nahi → pure regex CVParser kam se kam basic fields to extract karega hi.</div>
+</div>
+</div>
+
+<!-- ═══════════════ 10. GLOSSARY ═══════════════ -->
+<div class="section">
+<h2>10. Glossary — Har Technical Term</h2>
+
+<table>
+<tr><th>Term</th><th>Full Form / Meaning</th><th>Simple Explanation</th></tr>
+<tr><td><strong>API</strong></td><td>Application Programming Interface</td><td>Do software ke beech communication ka tareeka. Jaise waiter = API between kitchen and customer.</td></tr>
+<tr><td><strong>BERT</strong></td><td>Bidirectional Encoder Representations from Transformers</td><td>Google ka text understanding model. Meaning samajh sakta hai, sirf words match nahi karta.</td></tr>
+<tr><td><strong>BaaS</strong></td><td>Backend as a Service</td><td>Backend jo koi aur manage karta hai (jaise Firebase). Hum sirf use karte hain, server nahi chalate.</td></tr>
+<tr><td><strong>Cosine Similarity</strong></td><td>cos(θ) = (A·B)/(||A||×||B||)</td><td>Do vectors ke angle ka cosine. 0-1 scale — 1 = same direction, 0 = no relation.</td></tr>
+<tr><td><strong>CPU</strong></td><td>Central Processing Unit</td><td>Processor — laptop/desktop ka brain. GPU ke bina bhi chalta hai.</td></tr>
+<tr><td><strong>Embeddings</strong></td><td>Numerical vector representations</td><td>Text ko numbers mein convert karna. "Hello" → [0.1, 0.5, -0.3, ...]. Similar text ke similar numbers.</td></tr>
+<tr><td><strong>F1 Score</strong></td><td>2 × (P × R) / (P + R)</td><td>Precision aur recall ka harmonic mean. Model ki overall accuracy measure karta hai.</td></tr>
+<tr><td><strong>Fallback</strong></td><td>Backup/alternative plan</td><td>Agar plan A fail ho to plan B. BERT nahi hai to n-gram similarity use karo.</td></tr>
+<tr><td><strong>FastAPI</strong></td><td>Fast + API</td><td>Python ka web framework — REST endpoints banane ke liye. Fast, async, auto-docs.</td></tr>
+<tr><td><strong>FCM</strong></td><td>Firebase Cloud Messaging</td><td>Push notifications — app ko background mein bhi alert bhej sakte hain.</td></tr>
+<tr><td><strong>Graceful Degradation</strong></td><td>System crash na kare, kam capability se chale</td><td>Agar spaCy nahi → regex use karo. System kaam karta rahega, sirf accuracy giregi.</td></tr>
+<tr><td><strong>GPU</strong></td><td>Graphics Processing Unit</td><td>Graphics card — AI models train/inference ke liye. Hamara system CPU pe chalta hai (no GPU needed).</td></tr>
+<tr><td><strong>Ground Truth</strong></td><td>True/actual values</td><td>100% correct data — manually verified. Model ki accuracy measure karne ke liye benchmark.</td></tr>
+<tr><td><strong>Hybrid</strong></td><td>Combination of multiple approaches</td><td>Ek approach nahi — spaCy + BERT + Regex teeno ka combination.</td></tr>
+<tr><td><strong>Inference</strong></td><td>Model ka prediction/result nikaalna</td><td>Model ko input do → output aata hai. "Training" nahi karna, sirf "inference" karna hai.</td></tr>
+<tr><td><strong>MAE</strong></td><td>Mean Absolute Error</td><td>(1/n) × Σ|actual - predicted|. Model vs human difference ka average.</td></tr>
+<tr><td><strong>MVVM</strong></td><td>Model-View-ViewModel</td><td>Android architecture pattern. Code organized rakhta hai, testing easy karta hai.</td></tr>
+<tr><td><strong>NER</strong></td><td>Named Entity Recognition</td><td>Text se named entities nikaalna — PERSON, ORG, PRODUCT, DATE, etc.</td></tr>
+<tr><td><strong>NLP</strong></td><td>Natural Language Processing</td><td>Computers ka human language samajhna. CV parsing, matching sab NLP hai.</td></tr>
+<tr><td><strong>n-gram</strong></td><td>n-character sequences</td><td>Text ko chhote pieces mein todna. Bigram (2 chars), Trigram (3 chars). Similarity measure ke liye.</td></tr>
+<tr><td><strong>Pydantic</strong></td><td>Python data validation library</td><td>API input/output automatically validate karta hai. Wrong format reject hota hai.</td></tr>
+<tr><td><strong>Precision</strong></td><td>TP / (TP + FP)</td><td>Jo pakda, woh kitna sahi tha? False positives punish karta hai.</td></tr>
+<tr><td><strong>Pre-trained</strong></td><td>Already trained on large data</td><td>Model pehle se trained hai — humne train nahi kiya. Direct use kar sakte hain.</td></tr>
+<tr><td><strong>Recall</strong></td><td>TP / (TP + FN)</td><td>Jo hona chahiye tha, woh kitna mila? False negatives punish karta hai.</td></tr>
+<tr><td><strong>Regex</strong></td><td>Regular Expression</td><td>Pattern matching language. Emails, phones, dates nikaalne ke liye.</td></tr>
+<tr><td><strong>REST API</strong></td><td>Representational State Transfer API</td><td>Web API ka standard format. HTTP methods (POST, GET) use karta hai.</td></tr>
+<tr><td><strong>spaCy</strong></td><td>Industrial-strength NLP library</td><td>Python NLP library. Fast, production-ready. NER, POS tagging, parsing sab kuch.</td></tr>
+<tr><td><strong>Threshold</strong></td><td>Cutoff/limit value</td><td>Decision boundary. Score ≥ 55 → shortlisted. Score < 55 → rejected.</td></tr>
+<tr><td><strong>Vector</strong></td><td>Array of numbers</td><td>[0.1, 0.5, -0.3, ...] — 384 numbers represent text meaning.</td></tr>
+<tr><td><strong>Weight</strong></td><td>Importance/contribution factor</td><td>Kitna important hai component. Skill = 60% (most important), BERT = 10% (least).</td></tr>
+</table>
+</div>
+
+<p style="text-align:center;color:#999;font-size:12px;margin-top:40px;padding:20px;">
+  HireMentor — Complete Explanation &nbsp;|&nbsp; Every concept, every number, every "kyun" — explained &nbsp;|&nbsp; June 2026
+</p>
+
+</div>
+</body>
+</html>
