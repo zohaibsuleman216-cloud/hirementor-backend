@@ -89,7 +89,13 @@ class SemanticMatcher:
         # A candidate who only lists "machine learning" should still get partial
         # credit for a "python" requirement, because ML work implies Python —
         # that's context, and it's exactly what embedding similarity is for.
-        cv_skills_lower = {s.lower().strip() for s in cv_result.skills if s.strip()}
+        # A candidate's declared skills list isn't the only place their skills show
+        # up either — someone might describe using a tool in their experience or
+        # project write-up without it making the formal skills list. Mirror the
+        # job-side treatment below so neither side is judged on one field alone.
+        cv_experience_text = " ".join([cv_result.experience or ""] + list(cv_result.projects))
+        cv_implied_skills = {s.lower().strip() for s in extract_skills(cv_experience_text)}
+        cv_skills_lower = {s.lower().strip() for s in cv_result.skills if s.strip()} | cv_implied_skills
         job_skills_lower = {s.lower().strip() for s in job.required_skills if s.strip()}
 
         # Requirements aren't only the formal `required_skills` list — companies

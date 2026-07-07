@@ -48,6 +48,80 @@ SKILL_KEYWORDS: Set[str] = {
     "microservices", "serverless", "web3", "solidity", "smart contracts",
     "ui/ux", "ui design", "ux design", "figma", "sketch", "adobe xd",
     "photoshop", "illustrator", "after effects",
+
+    # ---- Non-technical / other professional fields ---- #
+    # Sales & Business Development
+    "sales", "cold calling", "b2b sales", "b2c sales", "account management",
+    "client relations", "customer relations", "lead generation", "crm",
+    "salesforce", "hubspot", "sales forecasting", "quota attainment",
+    "territory management", "upselling", "cross-selling", "closing deals",
+    "business development", "prospecting", "sales pipeline", "retail sales",
+    "merchandising", "point of sale", "pos systems",
+    # Marketing & Public Relations
+    "digital marketing", "social media marketing", "content marketing",
+    "email marketing", "seo", "sem", "google analytics", "google ads",
+    "facebook ads", "brand management", "market research", "copywriting",
+    "public relations", "media relations", "press releases", "campaign management",
+    "influencer marketing", "marketing strategy", "advertising",
+    # HR & Recruitment
+    "recruitment", "talent acquisition", "onboarding", "employee relations",
+    "performance management", "hr policies", "compensation and benefits",
+    "payroll", "hris", "workday", "labor relations", "employee engagement",
+    "training and development", "succession planning", "diversity and inclusion",
+    "conflict resolution", "workforce planning", "hr compliance",
+    # Finance & Accounting
+    "accounting", "bookkeeping", "financial analysis", "financial modeling",
+    "accounts payable", "accounts receivable", "general ledger", "gaap",
+    "budgeting", "forecasting", "tax preparation", "auditing", "quickbooks",
+    "sap", "financial reporting", "reconciliation", "cost accounting",
+    "cpa", "cfa", "investment analysis", "risk management", "underwriting",
+    "banking", "loan processing", "credit analysis", "portfolio management",
+    # Healthcare & Nursing
+    "patient care", "clinical", "nursing", "cpr", "bls", "acls", "phlebotomy",
+    "medical terminology", "ehr", "emr", "epic", "cerner", "hipaa",
+    "vital signs", "medication administration", "triage", "patient advocacy",
+    "healthcare administration", "medical billing", "medical coding", "icd-10",
+    # Education & Teaching
+    "curriculum development", "lesson planning", "classroom management",
+    "differentiated instruction", "student assessment", "iep", "special education",
+    "tutoring", "instructional design", "e-learning", "educational technology",
+    "childcare", "early childhood education",
+    # Culinary & Hospitality
+    "culinary", "menu planning", "food safety", "food preparation",
+    "kitchen management", "inventory management", "cost control",
+    "banquet", "catering", "baking", "pastry", "line cook", "sous chef",
+    "haccp", "servsafe", "hospitality", "guest services", "housekeeping",
+    "front desk", "reservations", "event planning",
+    # Legal
+    "legal research", "litigation", "contract drafting", "compliance",
+    "paralegal", "legal writing", "case management", "due diligence",
+    "intellectual property", "corporate law", "regulatory compliance",
+    # Construction & Engineering (non-software)
+    "blueprint reading", "autocad", "solidworks", "project scheduling",
+    "civil engineering", "mechanical engineering", "electrical engineering",
+    "structural engineering", "osha", "quality control", "quality assurance",
+    "six sigma", "lean manufacturing", "cad", "hvac", "welding", "plumbing",
+    "carpentry", "site supervision", "safety compliance",
+    # Aviation & Automotive
+    "aircraft maintenance", "faa regulations", "flight operations",
+    "ground support", "logistics", "supply chain", "fleet management",
+    "automotive repair", "diagnostics", "asian mechanic", "vehicle inspection",
+    # Agriculture
+    "crop management", "livestock management", "irrigation", "agronomy",
+    "sustainable farming", "gis",
+    # Fitness & Personal Training
+    "personal training", "fitness assessment", "nutrition counseling",
+    "group fitness", "exercise physiology", "wellness coaching",
+    # Arts, Design & Media
+    "graphic design", "video editing", "photography", "adobe premiere",
+    "creative direction", "storyboarding", "animation", "journalism",
+    "editing", "proofreading", "content writing", "scriptwriting",
+    # Consulting & Business
+    "business analysis", "process improvement", "stakeholder management",
+    "strategic planning", "kpi", "management consulting", "change management",
+    # Customer Service / BPO
+    "customer service", "call center", "technical support", "help desk",
+    "ticketing systems", "zendesk", "customer satisfaction", "escalation handling",
 }
 
 # Curated professional skill families. Membership in the same cluster is a
@@ -80,6 +154,57 @@ SKILL_CLUSTERS: List[Set[str]] = [
      "network security", "firewall configuration", "information security"},
     {"financial analysis", "excel", "accounting", "financial modeling",
      "bookkeeping", "data analysis"},
+
+    # ---- Non-technical clusters ---- #
+    {"sales", "cold calling", "b2b sales", "b2c sales", "account management",
+     "lead generation", "crm", "salesforce", "hubspot", "sales pipeline",
+     "business development", "prospecting", "closing deals", "quota attainment"},
+    {"digital marketing", "social media marketing", "content marketing",
+     "seo", "sem", "google ads", "facebook ads", "brand management",
+     "marketing strategy", "advertising", "market research", "public relations",
+     "media relations", "campaign management"},
+    {"recruitment", "talent acquisition", "onboarding", "employee relations",
+     "performance management", "hr policies", "compensation and benefits",
+     "hris", "workday", "employee engagement", "training and development",
+     "workforce planning", "hr compliance"},
+    {"accounting", "bookkeeping", "accounts payable", "accounts receivable",
+     "general ledger", "gaap", "financial reporting", "reconciliation",
+     "quickbooks", "sap", "cost accounting", "cpa", "auditing"},
+    {"financial analysis", "financial modeling", "investment analysis",
+     "risk management", "portfolio management", "banking", "underwriting",
+     "credit analysis", "cfa"},
+    {"patient care", "clinical", "nursing", "cpr", "bls", "acls", "phlebotomy",
+     "medical terminology", "vital signs", "medication administration",
+     "triage", "ehr", "emr", "epic", "cerner", "healthcare administration"},
+    {"medical billing", "medical coding", "icd-10", "healthcare administration",
+     "hipaa", "ehr", "emr"},
+    {"curriculum development", "lesson planning", "classroom management",
+     "differentiated instruction", "student assessment", "iep",
+     "special education", "instructional design", "educational technology",
+     "tutoring", "early childhood education"},
+    {"culinary", "menu planning", "food preparation", "kitchen management",
+     "baking", "pastry", "line cook", "sous chef", "haccp", "servsafe",
+     "food safety", "catering", "banquet"},
+    {"hospitality", "guest services", "housekeeping", "front desk",
+     "reservations", "event planning", "catering", "banquet"},
+    {"legal research", "litigation", "contract drafting", "paralegal",
+     "legal writing", "case management", "due diligence",
+     "intellectual property", "corporate law", "regulatory compliance"},
+    {"blueprint reading", "autocad", "solidworks", "cad", "civil engineering",
+     "mechanical engineering", "electrical engineering", "structural engineering",
+     "construction", "site supervision"},
+    {"osha", "quality control", "quality assurance", "six sigma",
+     "lean manufacturing", "safety compliance"},
+    {"customer service", "call center", "technical support", "help desk",
+     "ticketing systems", "zendesk", "customer satisfaction",
+     "escalation handling", "bpo"},
+    {"business analysis", "process improvement", "stakeholder management",
+     "strategic planning", "kpi", "management consulting", "change management",
+     "consulting"},
+    {"graphic design", "video editing", "photography", "adobe premiere",
+     "creative direction", "animation", "visual design"},
+    {"journalism", "editing", "proofreading", "content writing",
+     "copywriting", "scriptwriting", "public relations"},
 ]
 
 
