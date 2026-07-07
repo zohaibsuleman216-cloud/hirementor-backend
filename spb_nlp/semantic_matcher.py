@@ -109,51 +109,60 @@ class SemanticMatcher:
         total_required = len(all_required) or 1
         semantic_credit = sum(credit for _, credit in semantic_hits.values())
         skill_ratio = min((len(exact_hits) + semantic_credit) / total_required, 1.0)
-        skill_score = skill_ratio * 55.0
+        skill_score = skill_ratio * 55.0  # Skills — 55%
 
         # For the API-facing report, only surface skills against the company's
         # explicit required_skills list (implied_skills are an internal scoring aid).
         matching_skills = sorted((cv_skills_lower & job_skills_lower) | (set(semantic_hits) & job_skills_lower))
         missing_skills = sorted(job_skills_lower - set(matching_skills))
 
-        # -- Holistic CV-vs-job context similarity via BERT (15%) ------------- #
+        # -- Holistic CV-vs-job context similarity via BERT (14%) ------------- #
         # Captures tone/domain alignment beyond discrete skills (e.g. the job
         # description's overall subject matter vs the candidate's experience).
         cos_sim = self._compute_similarity(cv_result, job)
         doc_ratio = self._clamp((cos_sim - DOC_SIM_FLOOR) / (DOC_SIM_CEIL - DOC_SIM_FLOOR))
-        bert_score = doc_ratio * 15.0
+        bert_score = doc_ratio * 14.0
 
-        # -- Experience match (15% weight) ------------------------------ #
+        # -- Experience match (8% weight) -------------------------------- #
+        # HireMentor's primary users are students/fresh graduates who
+        # legitimately have 0 years of professional experience — that's not a
+        # red flag on a student placement platform, so this dimension carries
+        # much less weight than Skills/Education, which students *do* have
+        # real signal for (their degree, CGPA, and actual skill set).
         yr = cv_result.years_of_experience
         if yr >= 5.0:
-            exp_score = 15.0
-        elif yr >= 2.0:
-            exp_score = 12.0
-        elif yr >= 1.0:
             exp_score = 8.0
+        elif yr >= 2.0:
+            exp_score = 6.5
+        elif yr >= 1.0:
+            exp_score = 5.0
         elif yr > 0:
-            exp_score = 4.0
+            exp_score = 3.0
         else:
-            exp_score = 0.0
+            exp_score = 1.5  # baseline — "no experience yet" is the norm, not a penalty
 
-        # -- Education (10% weight) ------------------------------------- #
+        # -- Education (15% weight) --------------------------------------- #
+        def _has_word(text: str, words) -> bool:
+            return any(re.search(r'(?<!\w)' + re.escape(w) + r'(?!\w)', text) for w in words)
+
         if cv_result.education:
             edu_lower = cv_result.education.lower()
-            if any(kw in edu_lower for kw in ["phd", "ph.d.", "doctorate"]):
-                edu_score = 10.0
-            elif any(kw in edu_lower for kw in ["master", "m.s.", "m.a.", "m.tech"]):
-                edu_score = 8.0
-            elif any(kw in edu_lower for kw in ["bachelor", "b.s.", "b.a.", "b.tech", "b.e."]):
-                edu_score = 6.0
+            if _has_word(edu_lower, ["phd", "ph.d.", "doctorate"]):
+                edu_score = 15.0
+            elif _has_word(edu_lower, ["master", "m.s.", "m.a.", "m.tech", "mba", "mcom", "msc", "m.sc", "ms", "ma"]):
+                edu_score = 12.0
+            elif _has_word(edu_lower, ["bachelor", "b.s.", "b.a.", "b.tech", "b.e.", "bba",
+                                        "bcom", "bsc", "b.sc", "bs", "ba", "b.eng", "beng"]):
+                edu_score = 9.0
             else:
-                edu_score = 4.0
+                edu_score = 6.0
         else:
             edu_score = 0.0
 
-        # -- Certifications + GPA + Projects (5% weight) --------------- #
+        # -- Certifications + GPA + Projects (8% weight) ------------------ #
         gpa_match_bool = cv_result.gpa >= 2.5
-        gpa_bonus = 1.5 if cv_result.gpa >= 3.5 else (1.0 if cv_result.gpa >= 2.5 else 0.0)
-        cert_bonus = min(len(cv_result.certifications) * 1.0, 2.0)
+        gpa_bonus = 4.0 if cv_result.gpa >= 3.5 else (2.5 if cv_result.gpa >= 3.0 else (1.0 if cv_result.gpa >= 2.5 else 0.0))
+        cert_bonus = min(len(cv_result.certifications) * 1.0, 2.5)
         proj_bonus = min(len(cv_result.projects) * 0.5, 1.5)
         extra = gpa_bonus + cert_bonus + proj_bonus
 
@@ -188,10 +197,14 @@ class SemanticMatcher:
             gpa_match=gpa_match_bool,
             cosine_similarity=round(cos_sim, 4),
             recommendations=recs,
+            skill_score=round(skill_score, 2),
+            experience_score=round(exp_score, 2),
+            education_score=round(edu_score, 2),
+            extra_score=round(extra, 2),
             detailed_analysis=(
-                f"Skills: {skill_score:.0f}/55 | Context(BERT): {bert_score:.0f}/15 | "
-                f"Exp: {exp_score:.0f}/15 | Edu: {edu_score:.0f}/10 | "
-                f"Extra: {extra:.0f}/5"
+                f"Skills: {skill_score:.0f}/55 | Context(BERT): {bert_score:.0f}/14 | "
+                f"Exp: {exp_score:.0f}/8 | Edu: {edu_score:.0f}/15 | "
+                f"Extra: {extra:.0f}/8"
                 + (f" | Semantic matches: {len(semantic_hits)}" if semantic_hits else "")
             ),
         )

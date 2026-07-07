@@ -72,6 +72,10 @@ class MatchResult:
     cosine_similarity: float = 0.0
     recommendations: List[str] = field(default_factory=list)
     detailed_analysis: str = ""
+    skill_score: float = 0.0
+    experience_score: float = 0.0
+    education_score: float = 0.0
+    extra_score: float = 0.0
 
 
 @dataclass

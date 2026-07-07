@@ -248,7 +248,7 @@ def match_cv_to_job(request: MatchRequest):
                 experience_match=years_exp >= 1.0,
                 gpa_match=gpa >= request.minimum_gpa,
                 semantic_similarity=result.cosine_similarity * 10.0,
-                skill_score=round(skill_ratio * 60.0, 1),
+                skill_score=result.skill_score,
                 experience_score=result.experience_score,
                 education_score=result.education_score,
                 extra_score=result.extra_score,
