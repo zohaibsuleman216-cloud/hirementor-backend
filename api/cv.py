@@ -45,13 +45,19 @@ class CVParseResponse(BaseModel):
 
 
 class MatchRequest(BaseModel):
-    cv_text: str
+    cv_text: str = ""
     job_title: str
     job_description: str
     required_skills: list[str] = []
     required_education: str = "Any"
     minimum_gpa: float = 0.0
     matching_threshold: float = DEFAULT_MATCH_THRESHOLD
+    candidate_skills: list[str] | None = None
+    candidate_years_experience: float | None = None
+    candidate_education: str | None = None
+    candidate_gpa: float | None = None
+    candidate_certifications: list[str] | None = None
+    candidate_projects: list[str] | None = None
 
 
 class MatchResponse(BaseModel):
@@ -143,7 +149,7 @@ def parse_cv(request: CVParseRequest):
     if NLP_AVAILABLE:
         return _parse_cv_with_nlp(request.text)
 
-    raise HTTPException(status_code=503, detail="CV parsing unavailable (NLP module not installed)")
+    raise HTTPException(status_code=503, detail="CV parsing unavailable")
 
 
 @router.post("/parse-file", response_model=CVParseResponse)
@@ -160,7 +166,7 @@ async def parse_cv_file(file: UploadFile = File(...)):
                 tmp_path = tmp.name
             try:
                 result = parser.parse_pdf(tmp_path)
-                text = result.get("raw_text", "")
+                text = result.raw_text
             finally:
                 Path(tmp_path).unlink(missing_ok=True)
         else:
@@ -170,26 +176,60 @@ async def parse_cv_file(file: UploadFile = File(...)):
 
 @router.post("/match", response_model=MatchResponse)
 def match_cv_to_job(request: MatchRequest):
-    cv_text = request.cv_text.strip()
-    if not cv_text:
-        raise HTTPException(status_code=400, detail="Empty CV text")
+    # Use structured candidate data if provided, else fall back to raw text parsing
+    if request.candidate_skills is not None:
+        candidate_skills = request.candidate_skills
+        years_exp = request.candidate_years_experience or 0.0
+        edu_text = (request.candidate_education or "").lower()
+        gpa = request.candidate_gpa or 0.0
+        certs = request.candidate_certifications or []
+        projs = request.candidate_projects or []
+    else:
+        cv_text = request.cv_text.strip()
+        if not cv_text:
+            raise HTTPException(status_code=400, detail="Empty CV text")
+        candidate_skills = extract_skills(cv_text)
+        years_exp = estimate_years_of_experience(cv_text)
+        edu_text = extract_education(cv_text).lower()
+        gpa = extract_gpa(cv_text)
+        certs = extract_certifications(cv_text)
+        projs = extract_projects(cv_text)
 
+    # Normalize skills for fuzzy matching
+    def normalize_skill(s: str) -> str:
+        s = s.lower().strip()
+        replacements = {
+            "machine learning": "ml", "artificial intelligence": "ai",
+            "javascript": "js", "typescript": "ts",
+            "react native": "reactnative", "c++": "cpp", "c#": "csharp",
+            ".net": "dotnet", "node.js": "nodejs", "express.js": "express",
+        }
+        return replacements.get(s, s)
+
+    required_skills_norm = [normalize_skill(s) for s in request.required_skills]
+    candidate_skills_norm = [normalize_skill(s) for s in candidate_skills]
+
+    # Expand: partial matching - "Android" matches "android development"
+    expanded = set(candidate_skills_norm)
+    for cs in candidate_skills_norm:
+        for rs in required_skills_norm:
+            if rs in cs or cs in rs:
+                expanded.add(rs)
+
+    matching = list(expanded & set(required_skills_norm))
+    missing = list(set(required_skills_norm) - expanded)
+    skill_ratio = len(matching) / len(required_skills_norm) if required_skills_norm else 0
+
+    # Use SemanticMatcher when NLP is available (handles BERT + composite scoring)
     if NLP_AVAILABLE and _semantic_matcher is not None:
         try:
-            parser = SpacyNerParser()
-            parsed = parser.parse_text(cv_text)
             cv_result = nlp_models.CVParseResult(
-                candidate_name=parsed.candidate_name,
-                email=parsed.email,
-                phone=parsed.phone,
-                skills=parsed.skills or extract_skills(cv_text),
-                experience=parsed.experience or extract_experience(cv_text),
-                education=parsed.education or extract_education(cv_text),
-                gpa=extract_gpa(cv_text) or parsed.gpa,
-                years_of_experience=estimate_years_of_experience(cv_text) or parsed.years_of_experience,
-                certifications=extract_certifications(cv_text) or parsed.certifications,
-                projects=extract_projects(cv_text) or parsed.projects,
-                summary=parsed.summary,
+                skills=candidate_skills,
+                education=edu_text,
+                gpa=gpa,
+                years_of_experience=years_exp,
+                certifications=certs,
+                projects=projs,
             )
             job = nlp_models.Job(
                 title=request.job_title,
@@ -197,47 +237,35 @@ def match_cv_to_job(request: MatchRequest):
                 required_skills=request.required_skills,
                 matching_threshold=request.matching_threshold,
             )
-
             result = _semantic_matcher.match_cv_to_job(cv_result, job)
 
+            # Override matching/missing with normalized fuzzy results
             return MatchResponse(
-                match_score=result.match_score,
-                meets_threshold=result.meets_threshold,
-                matching_skills=sorted(result.matching_skills),
-                missing_skills=sorted(result.missing_skills),
-                experience_match=result.experience_match,
-                gpa_match=result.gpa_match,
+                match_score=round(result.match_score, 1),
+                meets_threshold=result.match_score >= request.matching_threshold,
+                matching_skills=sorted(matching) if matching else sorted(result.matching_skills),
+                missing_skills=sorted(missing) if missing else sorted(result.missing_skills),
+                experience_match=years_exp >= 1.0,
+                gpa_match=gpa >= request.minimum_gpa,
                 semantic_similarity=result.cosine_similarity * 10.0,
-                skill_score=min(result.match_score, 60.0),
-                experience_score=15.0 if result.experience_match else 0.0,
-                education_score=10.0 if cv_result.education else 0.0,
-                extra_score=5.0,
-                recommendations=result.recommendations,
+                skill_score=round(skill_ratio * 60.0, 1),
+                experience_score=result.experience_score,
+                education_score=result.education_score,
+                extra_score=result.extra_score,
+                recommendations=result.recommendations or ([f"Consider learning: {', '.join(missing[:3])}"] if missing else []),
                 detailed_analysis=result.detailed_analysis,
             )
         except Exception as e:
-            logger.warning("SemanticMatcher failed: %s. Falling back to basic match.", e)
+            logger.warning("SemanticMatcher failed: %s", e)
 
-    required_skills_lower = {s.lower() for s in request.required_skills}
-    candidate_skills_lower = {s.lower() for s in extract_skills(cv_text)}
-    matching = list(candidate_skills_lower & required_skills_lower)
-    missing = list(required_skills_lower - candidate_skills_lower)
-    skill_ratio = len(matching) / len(required_skills_lower) if required_skills_lower else 0
+    # Fallback basic matching
     skill_score = skill_ratio * 60.0
-
-    years_exp = estimate_years_of_experience(cv_text)
     exp_score = 15.0 if years_exp >= 5 else 12.0 if years_exp >= 2 else 8.0 if years_exp >= 1 else 4.0 if years_exp > 0 else 0.0
-
-    edu_text = extract_education(cv_text).lower()
     edu_score = 10.0 if "phd" in edu_text else 8.0 if "master" in edu_text else 6.0 if "bachelor" in edu_text else 4.0 if edu_text else 0.0
-
-    gpa = extract_gpa(cv_text)
     semantic = 5.0 if skill_ratio < 0.3 else 8.0
     gpa_extra = (gpa / 4.0 * 1.5) if gpa > 0 else 0.0
-    extra = min(gpa_extra + min(len(extract_certifications(cv_text)), 2) + min(len(extract_projects(cv_text)), 3) * 0.5, 5.0)
-
+    extra = min(gpa_extra + min(len(certs), 2) + min(len(projs), 3) * 0.5, 5.0)
     total = max(0.0, min(skill_score + semantic + exp_score + edu_score + extra, 100.0))
-    recs = [f"Consider learning: {', '.join(sorted(missing)[:3])}"] if missing else []
 
     return MatchResponse(
         match_score=round(total, 1),
@@ -245,15 +273,12 @@ def match_cv_to_job(request: MatchRequest):
         matching_skills=sorted(matching),
         missing_skills=sorted(missing),
         experience_match=years_exp >= 1.0,
-        gpa_match=gpa >= 2.5,
+        gpa_match=gpa >= request.minimum_gpa,
         semantic_similarity=semantic,
         skill_score=round(skill_score, 1),
         experience_score=exp_score,
         education_score=edu_score,
         extra_score=round(extra, 1),
-        recommendations=recs,
-        detailed_analysis=(
-            f"Basic: Skills {skill_score:.0f}/60 + Semantic {semantic:.0f}/10 + "
-            f"Exp {exp_score:.0f}/15 + Edu {edu_score:.0f}/10 + Extra {extra:.0f}/5"
-        ),
+        recommendations=[f"Consider learning: {', '.join(missing[:3])}"] if missing else [],
+        detailed_analysis=f"Basic: Skills {skill_score:.0f}/60 + Semantic {semantic:.0f}/10 + Exp {exp_score:.0f}/15 + Edu {edu_score:.0f}/10 + Extra {extra:.0f}/5",
     )

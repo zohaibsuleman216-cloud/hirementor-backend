@@ -50,6 +50,55 @@ SKILL_KEYWORDS: Set[str] = {
     "photoshop", "illustrator", "after effects",
 }
 
+# Curated professional skill families. Membership in the same cluster is a
+# strong, auditable relatedness signal (e.g. "kotlin" <-> "android development")
+# that generic short-phrase BERT similarity is often too noisy to capture
+# reliably on its own — see SemanticMatcher, which combines this with embeddings.
+SKILL_CLUSTERS: List[Set[str]] = [
+    {"python", "django", "flask", "fastapi", "backend development", "python development"},
+    {"java", "kotlin", "spring boot", "jsp", "servlets", "backend development"},
+    {"javascript", "typescript", "react", "angular", "vue", "node.js", "next.js",
+     "nuxt.js", "svelte", "jquery", "frontend development", "web development", "html", "css"},
+    {"android", "kotlin", "java", "jetpack compose", "kotlin multiplatform",
+     "android development", "mobile development"},
+    {"ios", "swift", "swiftui", "xcode", "ios development", "mobile development"},
+    {"flutter", "dart", "react native", "xamarin", "mobile development"},
+    {"sql", "mysql", "postgresql", "mongodb", "oracle", "sqlite", "redis",
+     "cassandra", "dynamodb", "mariadb", "couchdb", "database", "database management"},
+    {"aws", "azure", "gcp", "google cloud", "docker", "kubernetes", "jenkins",
+     "terraform", "ansible", "ci/cd", "devops", "cloud computing"},
+    {"machine learning", "deep learning", "nlp", "natural language processing",
+     "computer vision", "tensorflow", "pytorch", "keras", "scikit-learn",
+     "pandas", "numpy", "data science", "data analysis", "data engineering",
+     "artificial intelligence", "statistics"},
+    {"ui/ux", "ui design", "ux design", "figma", "sketch", "adobe xd",
+     "photoshop", "illustrator", "after effects", "graphic design",
+     "visual design", "branding"},
+    {"digital marketing", "seo", "social media marketing", "content marketing",
+     "google analytics", "marketing", "email marketing"},
+    {"cybersecurity", "ethical hacking", "penetration testing",
+     "network security", "firewall configuration", "information security"},
+    {"financial analysis", "excel", "accounting", "financial modeling",
+     "bookkeeping", "data analysis"},
+]
+
+
+def skills_in_same_cluster(skill_a: str, skill_b: str) -> bool:
+    """Whole-word/phrase check: do these two skills share a curated cluster?"""
+    def _contains(term: str, skill: str) -> bool:
+        if term == skill:
+            return True
+        pattern = r'(?<!\w)' + re.escape(term) + r'(?!\w)'
+        return bool(re.search(pattern, skill)) or bool(re.search(r'(?<!\w)' + re.escape(skill) + r'(?!\w)', term))
+
+    for cluster in SKILL_CLUSTERS:
+        a_in = any(_contains(term, skill_a) for term in cluster)
+        b_in = any(_contains(term, skill_b) for term in cluster)
+        if a_in and b_in:
+            return True
+    return False
+
+
 EDUCATION_KEYWORDS: Set[str] = {
     "bachelor", "master", "phd", "doctorate", "associate", "diploma",
     "b.s.", "b.a.", "m.s.", "m.a.", "ph.d.", "bs", "ba", "ms", "ma", "phd",
