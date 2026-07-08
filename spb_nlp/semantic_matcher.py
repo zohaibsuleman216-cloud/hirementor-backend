@@ -165,12 +165,15 @@ class SemanticMatcher:
         else:
             edu_score = 0.0
 
-        # -- Certifications + GPA + Projects (8% weight) ------------------ #
+        # -- Certifications + Projects (8% weight) ------------------------ #
+        # GPA is deliberately not part of the match score — a company already
+        # has its own separate minimum-GPA screen on the job posting, and
+        # blending it into the score here would double-penalize (or
+        # double-reward) a candidate for the same number twice.
         gpa_match_bool = cv_result.gpa >= 2.5
-        gpa_bonus = 4.0 if cv_result.gpa >= 3.5 else (2.5 if cv_result.gpa >= 3.0 else (1.0 if cv_result.gpa >= 2.5 else 0.0))
-        cert_bonus = min(len(cv_result.certifications) * 1.0, 2.5)
-        proj_bonus = min(len(cv_result.projects) * 0.5, 1.5)
-        extra = gpa_bonus + cert_bonus + proj_bonus
+        cert_bonus = min(len(cv_result.certifications) * 1.6, 5.0)
+        proj_bonus = min(len(cv_result.projects) * 1.0, 3.0)
+        extra = cert_bonus + proj_bonus
 
         recs = []
         if semantic_hits:
@@ -182,8 +185,6 @@ class SemanticMatcher:
             recs.append(f"Consider learning: {', '.join(missing_skills[:3])}")
         if not cv_result.certifications:
             recs.append("Add relevant certifications")
-        if cv_result.gpa > 0 and cv_result.gpa < 2.5:
-            recs.append("GPA below 2.5 threshold")
         if doc_ratio < 0.15 and skill_ratio < 0.2:
             recs.append("Profile needs significant upskilling for this role")
 

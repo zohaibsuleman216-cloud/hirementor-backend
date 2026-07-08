@@ -42,6 +42,7 @@ class CVParseResponse(BaseModel):
     projects: list[str] = []
     summary: str = ""
     parsed_by: str = ""
+    raw_text: str = ""
 
 
 class MatchRequest(BaseModel):
@@ -101,6 +102,7 @@ def _parse_cv_with_nlp(text: str) -> CVParseResponse:
         projects=projs,
         summary=result.summary or "",
         parsed_by="nlp",
+        raw_text=text[:6000],
     )
 
 
@@ -138,6 +140,7 @@ Return ONLY valid JSON with these fields:
         projects=data.get("projects", []),
         summary=data.get("summary", ""),
         parsed_by="gemini",
+        raw_text=text[:6000],
     )
 
 
@@ -176,24 +179,30 @@ async def parse_cv_file(file: UploadFile = File(...)):
 
 @router.post("/match", response_model=MatchResponse)
 def match_cv_to_job(request: MatchRequest):
-    # Use structured candidate data if provided, else fall back to raw text parsing
-    if request.candidate_skills is not None:
-        candidate_skills = request.candidate_skills
-        years_exp = request.candidate_years_experience or 0.0
-        edu_text = (request.candidate_education or "").lower()
-        gpa = request.candidate_gpa or 0.0
-        certs = request.candidate_certifications or []
-        projs = request.candidate_projects or []
+    # The resume text is the primary source of truth for matching — parse it
+    # whenever it's available and merge the result with any explicitly-passed
+    # candidate_* fields (profile-declared skills/certs still count, they just
+    # supplement the CV instead of replacing it, since a manually-typed skills
+    # list alone was previously the *only* signal used, ignoring the CV entirely).
+    cv_text = (request.cv_text or "").strip()
+    if cv_text:
+        parsed_skills = extract_skills(cv_text)
+        parsed_years = estimate_years_of_experience(cv_text)
+        parsed_edu = extract_education(cv_text)
+        parsed_gpa = extract_gpa(cv_text)
+        parsed_certs = extract_certifications(cv_text)
+        parsed_projs = extract_projects(cv_text)
     else:
-        cv_text = request.cv_text.strip()
-        if not cv_text:
-            raise HTTPException(status_code=400, detail="Empty CV text")
-        candidate_skills = extract_skills(cv_text)
-        years_exp = estimate_years_of_experience(cv_text)
-        edu_text = extract_education(cv_text).lower()
-        gpa = extract_gpa(cv_text)
-        certs = extract_certifications(cv_text)
-        projs = extract_projects(cv_text)
+        parsed_skills, parsed_years, parsed_edu = [], 0.0, ""
+        parsed_gpa, parsed_certs, parsed_projs = 0.0, [], []
+
+    explicit_skills = request.candidate_skills or []
+    candidate_skills = list(dict.fromkeys(list(explicit_skills) + list(parsed_skills)))
+    years_exp = max(request.candidate_years_experience or 0.0, parsed_years)
+    edu_text = (request.candidate_education or parsed_edu or "").lower()
+    gpa = request.candidate_gpa or parsed_gpa or 0.0
+    certs = list(dict.fromkeys(list(request.candidate_certifications or []) + list(parsed_certs)))
+    projs = list(dict.fromkeys(list(request.candidate_projects or []) + list(parsed_projs)))
 
     # Normalize skills for fuzzy matching
     def normalize_skill(s: str) -> str:
@@ -230,6 +239,8 @@ def match_cv_to_job(request: MatchRequest):
                 years_of_experience=years_exp,
                 certifications=certs,
                 projects=projs,
+                experience=cv_text[:4000],
+                raw_text=cv_text[:4000],
             )
             job = nlp_models.Job(
                 title=request.job_title,
