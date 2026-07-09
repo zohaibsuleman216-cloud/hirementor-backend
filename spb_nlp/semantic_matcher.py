@@ -85,7 +85,7 @@ class SemanticMatcher:
         """Match parsed CV against a job posting.  See module docstring."""
         threshold = threshold if threshold is not None else job.matching_threshold
 
-        # -- Skill matching: exact overlap + semantic (BERT) inference (55%) -- #
+        # -- Skill matching: exact overlap + semantic (BERT) inference (60%) -- #
         # A candidate who only lists "machine learning" should still get partial
         # credit for a "python" requirement, because ML work implies Python —
         # that's context, and it's exactly what embedding similarity is for.
@@ -115,65 +115,63 @@ class SemanticMatcher:
         total_required = len(all_required) or 1
         semantic_credit = sum(credit for _, credit in semantic_hits.values())
         skill_ratio = min((len(exact_hits) + semantic_credit) / total_required, 1.0)
-        skill_score = skill_ratio * 55.0  # Skills — 55%
+        skill_score = skill_ratio * 60.0  # Skills — 60%
 
         # For the API-facing report, only surface skills against the company's
         # explicit required_skills list (implied_skills are an internal scoring aid).
         matching_skills = sorted((cv_skills_lower & job_skills_lower) | (set(semantic_hits) & job_skills_lower))
         missing_skills = sorted(job_skills_lower - set(matching_skills))
 
-        # -- Holistic CV-vs-job context similarity via BERT (14%) ------------- #
+        # -- Holistic CV-vs-job context similarity via BERT (10%) ------------- #
         # Captures tone/domain alignment beyond discrete skills (e.g. the job
         # description's overall subject matter vs the candidate's experience).
         cos_sim = self._compute_similarity(cv_result, job)
         doc_ratio = self._clamp((cos_sim - DOC_SIM_FLOOR) / (DOC_SIM_CEIL - DOC_SIM_FLOOR))
-        bert_score = doc_ratio * 14.0
+        bert_score = doc_ratio * 10.0
 
-        # -- Experience match (8% weight) -------------------------------- #
-        # HireMentor's primary users are students/fresh graduates who
-        # legitimately have 0 years of professional experience — that's not a
-        # red flag on a student placement platform, so this dimension carries
-        # much less weight than Skills/Education, which students *do* have
-        # real signal for (their degree, CGPA, and actual skill set).
+        # -- Experience match (15% weight) -------------------------------- #
         yr = cv_result.years_of_experience
         if yr >= 5.0:
-            exp_score = 8.0
+            exp_score = 15.0
         elif yr >= 2.0:
-            exp_score = 6.5
+            exp_score = 12.0
         elif yr >= 1.0:
-            exp_score = 5.0
+            exp_score = 9.0
         elif yr > 0:
-            exp_score = 3.0
+            exp_score = 5.5
         else:
-            exp_score = 1.5  # baseline — "no experience yet" is the norm, not a penalty
+            exp_score = 3.0  # baseline — "no experience yet" is the norm, not a penalty
 
-        # -- Education (15% weight) --------------------------------------- #
+        # -- Education (10% weight) --------------------------------------- #
         def _has_word(text: str, words) -> bool:
             return any(re.search(r'(?<!\w)' + re.escape(w) + r'(?!\w)', text) for w in words)
 
         if cv_result.education:
             edu_lower = cv_result.education.lower()
             if _has_word(edu_lower, ["phd", "ph.d.", "doctorate"]):
-                edu_score = 15.0
+                edu_score = 10.0
             elif _has_word(edu_lower, ["master", "m.s.", "m.a.", "m.tech", "mba", "mcom", "msc", "m.sc", "ms", "ma"]):
-                edu_score = 12.0
+                edu_score = 8.0
             elif _has_word(edu_lower, ["bachelor", "b.s.", "b.a.", "b.tech", "b.e.", "bba",
                                         "bcom", "bsc", "b.sc", "bs", "ba", "b.eng", "beng"]):
-                edu_score = 9.0
-            else:
                 edu_score = 6.0
+            else:
+                edu_score = 4.0
         else:
             edu_score = 0.0
 
-        # -- Certifications + Projects (8% weight) ------------------------ #
-        # GPA is deliberately not part of the match score — a company already
-        # has its own separate minimum-GPA screen on the job posting, and
-        # blending it into the score here would double-penalize (or
-        # double-reward) a candidate for the same number twice.
+        # -- GPA (5% weight) ------------------------------------------------ #
         gpa_match_bool = cv_result.gpa >= 2.5
-        cert_bonus = min(len(cv_result.certifications) * 1.6, 5.0)
-        proj_bonus = min(len(cv_result.projects) * 1.0, 3.0)
-        extra = cert_bonus + proj_bonus
+        if cv_result.gpa >= 3.5:
+            gpa_score = 5.0
+        elif cv_result.gpa >= 3.0:
+            gpa_score = 3.5
+        elif cv_result.gpa >= 2.5:
+            gpa_score = 2.0
+        elif cv_result.gpa > 0:
+            gpa_score = 1.0
+        else:
+            gpa_score = 0.0  # not reported — no credit, no penalty
 
         recs = []
         if semantic_hits:
@@ -183,13 +181,14 @@ class SemanticMatcher:
             recs.append(f"Partially inferred from related skills: {inferred}")
         if missing_skills:
             recs.append(f"Consider learning: {', '.join(missing_skills[:3])}")
-        if not cv_result.certifications:
-            recs.append("Add relevant certifications")
+        if cv_result.gpa > 0 and cv_result.gpa < 2.5:
+            recs.append("GPA below 2.5")
         if doc_ratio < 0.15 and skill_ratio < 0.2:
             recs.append("Profile needs significant upskilling for this role")
 
         # -- Final composite (0-100) ------------------------------------ #
-        total = skill_score + bert_score + exp_score + edu_score + extra
+        # Skills 60 | Experience 15 | Education 10 | Semantic(BERT) 10 | GPA 5
+        total = skill_score + bert_score + exp_score + edu_score + gpa_score
         total = min(max(total, 0.0), 100.0)
 
         return MatchResult(
@@ -207,11 +206,11 @@ class SemanticMatcher:
             skill_score=round(skill_score, 2),
             experience_score=round(exp_score, 2),
             education_score=round(edu_score, 2),
-            extra_score=round(extra, 2),
+            extra_score=round(gpa_score, 2),  # field name kept for API compatibility — now holds the GPA sub-score
             detailed_analysis=(
-                f"Skills: {skill_score:.0f}/55 | Context(BERT): {bert_score:.0f}/14 | "
-                f"Exp: {exp_score:.0f}/8 | Edu: {edu_score:.0f}/15 | "
-                f"Extra: {extra:.0f}/8"
+                f"Skills: {skill_score:.0f}/60 | Exp: {exp_score:.0f}/15 | "
+                f"Edu: {edu_score:.0f}/10 | Semantic(BERT): {bert_score:.0f}/10 | "
+                f"GPA: {gpa_score:.0f}/5"
                 + (f" | Semantic matches: {len(semantic_hits)}" if semantic_hits else "")
             ),
         )
