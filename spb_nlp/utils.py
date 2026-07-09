@@ -82,7 +82,7 @@ SKILL_KEYWORDS: Set[str] = {
     "vital signs", "medication administration", "triage", "patient advocacy",
     "healthcare administration", "medical billing", "medical coding", "icd-10",
     # Education & Teaching
-    "curriculum development", "lesson planning", "classroom management",
+    "teaching", "curriculum development", "lesson planning", "classroom management",
     "differentiated instruction", "student assessment", "iep", "special education",
     "tutoring", "instructional design", "e-learning", "educational technology",
     "childcare", "early childhood education",
@@ -178,7 +178,7 @@ SKILL_CLUSTERS: List[Set[str]] = [
      "triage", "ehr", "emr", "epic", "cerner", "healthcare administration"},
     {"medical billing", "medical coding", "icd-10", "healthcare administration",
      "hipaa", "ehr", "emr"},
-    {"curriculum development", "lesson planning", "classroom management",
+    {"teaching", "curriculum development", "lesson planning", "classroom management",
      "differentiated instruction", "student assessment", "iep",
      "special education", "instructional design", "educational technology",
      "tutoring", "early childhood education"},
