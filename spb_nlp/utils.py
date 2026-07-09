@@ -279,11 +279,19 @@ def extract_education(text: str) -> str:
     lines = text.split('\n')
     edu_lines = []
     in_edu = False
+    section_headers = ['education', 'academic background', 'academic qualifications']
     for line in lines:
         line_lower = line.lower().strip()
-        if any(kw in line_lower for kw in ['education', 'academic background',
-                                            'academic qualifications']):
+        header_hit = next((kw for kw in section_headers if kw in line_lower), None)
+        if header_hit:
             in_edu = True
+            # Single-paragraph resumes (pasted text, or a PDF that didn't
+            # preserve line breaks) put the degree on the *same* line as the
+            # "Education:" label — capture that remainder too, not just
+            # whatever comes on later lines.
+            remainder = line[line_lower.index(header_hit) + len(header_hit):].strip(" :-\t")
+            if remainder:
+                edu_lines.append(remainder)
             continue
         if in_edu:
             if any(kw in line_lower for kw in ['experience', 'skills',
@@ -292,7 +300,18 @@ def extract_education(text: str) -> str:
                 break
             if line.strip():
                 edu_lines.append(line.strip())
-    return ' '.join(edu_lines) if edu_lines else ""
+    if edu_lines:
+        return ' '.join(edu_lines)
+
+    # No "Education" section header found at all (or it was empty) — fall
+    # back to scanning the raw text directly for a degree phrase, so resumes
+    # that mention a degree without a formal section header still register.
+    degree_pattern = (
+        r'((?:bachelor|master|ph\.?d\.?|doctorate|b\.?s\.?c?\.?|b\.?a\.?|'
+        r'b\.?tech|b\.?e\.?|m\.?s\.?c?\.?|m\.?a\.?|m\.?tech|mba)[^.,;\n]{0,60})'
+    )
+    match = re.search(degree_pattern, text, re.IGNORECASE)
+    return match.group(1).strip() if match else ""
 
 
 def extract_experience(text: str) -> str:
