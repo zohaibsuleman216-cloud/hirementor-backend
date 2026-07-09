@@ -49,6 +49,7 @@ class MatchRequest(BaseModel):
     cv_text: str = ""
     job_title: str
     job_description: str
+    job_requirements: list[str] = []
     required_skills: list[str] = []
     required_education: str = "Any"
     minimum_gpa: float = 0.0
@@ -246,7 +247,9 @@ def match_cv_to_job(request: MatchRequest):
             job = nlp_models.Job(
                 title=request.job_title,
                 description=request.job_description,
+                requirements=request.job_requirements,
                 required_skills=request.required_skills,
+                required_education=request.required_education,
                 matching_threshold=request.matching_threshold,
             )
             result = _semantic_matcher.match_cv_to_job(cv_result, job)

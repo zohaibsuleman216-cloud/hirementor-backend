@@ -13,7 +13,7 @@ from typing import List, Optional, Tuple
 from spb_nlp.models import (
     CVParseResult, Job, MatchResult,
 )
-from spb_nlp.utils import preprocess_for_embedding, extract_skills, skills_in_same_cluster
+from spb_nlp.utils import preprocess_for_embedding, extract_skills, skills_in_same_cluster, estimate_years_of_experience
 
 # Curated-cluster membership (e.g. "kotlin" <-> "android development") is a
 # stronger, auditable signal than raw short-phrase cosine similarity, which is
@@ -115,7 +115,17 @@ class SemanticMatcher:
         total_required = len(all_required) or 1
         semantic_credit = sum(credit for _, credit in semantic_hits.values())
         skill_ratio = min((len(exact_hits) + semantic_credit) / total_required, 1.0)
-        skill_score = skill_ratio * 60.0  # Skills — 60%
+
+        # Meeting every requirement once is worth the bulk of the 60% (54 pts),
+        # but two candidates who both "just meet" a requirement aren't
+        # necessarily equally qualified — someone who covers a required skill
+        # with three related tools (e.g. C, C++, and Python for a
+        # "programming" requirement) has demonstrably deeper coverage than
+        # someone who covers it with exactly one. Reward that depth with a
+        # small bonus, separate from and on top of the pass/fail ratio.
+        reinforcing_extra = self._count_reinforcing_skills(all_required, cv_skills_lower)
+        depth_bonus = min(reinforcing_extra * 1.5, 6.0)
+        skill_score = min(skill_ratio * 54.0 + depth_bonus, 60.0)  # Skills — 60%
 
         # For the API-facing report, only surface skills against the company's
         # explicit required_skills list (implied_skills are an internal scoring aid).
@@ -130,35 +140,76 @@ class SemanticMatcher:
         bert_score = doc_ratio * 10.0
 
         # -- Experience match (15% weight) -------------------------------- #
+        # Tied to what the job actually asks for, not an absolute years count:
+        # a job that never states a years requirement falls back to a fixed
+        # scale (0 years is the norm for students, not a red flag here), but
+        # once a job *does* say e.g. "2+ years", meeting that bar is worth
+        # more than merely having "some" experience, and exceeding it earns a
+        # capped bonus rather than an unbounded reward for raw years.
+        required_years = estimate_years_of_experience(
+            " ".join([job.description or ""] + list(job.requirements))
+        )
         yr = cv_result.years_of_experience
-        if yr >= 5.0:
-            exp_score = 15.0
-        elif yr >= 2.0:
-            exp_score = 12.0
-        elif yr >= 1.0:
-            exp_score = 9.0
-        elif yr > 0:
-            exp_score = 5.5
+        if required_years <= 0:
+            if yr >= 5.0:
+                exp_score = 15.0
+            elif yr >= 2.0:
+                exp_score = 12.0
+            elif yr >= 1.0:
+                exp_score = 9.0
+            elif yr > 0:
+                exp_score = 5.5
+            else:
+                exp_score = 3.0  # baseline — "no experience yet" is the norm, not a penalty
         else:
-            exp_score = 3.0  # baseline — "no experience yet" is the norm, not a penalty
+            gap = yr - required_years
+            if gap < 0:
+                exp_score = max(3.0, 12.75 * (yr / required_years))
+            elif gap == 0:
+                exp_score = 12.75  # meets the stated requirement exactly
+            elif gap < required_years:
+                exp_score = 14.0  # exceeds it, but by less than double
+            else:
+                exp_score = 15.0  # exceeds it substantially
 
         # -- Education (10% weight) --------------------------------------- #
         def _has_word(text: str, words) -> bool:
             return any(re.search(r'(?<!\w)' + re.escape(w) + r'(?!\w)', text) for w in words)
 
-        if cv_result.education:
-            edu_lower = cv_result.education.lower()
-            if _has_word(edu_lower, ["phd", "ph.d.", "doctorate"]):
-                edu_score = 10.0
-            elif _has_word(edu_lower, ["master", "m.s.", "m.a.", "m.tech", "mba", "mcom", "msc", "m.sc", "ms", "ma"]):
-                edu_score = 8.0
-            elif _has_word(edu_lower, ["bachelor", "b.s.", "b.a.", "b.tech", "b.e.", "bba",
-                                        "bcom", "bsc", "b.sc", "bs", "ba", "b.eng", "beng"]):
-                edu_score = 6.0
-            else:
-                edu_score = 4.0
+        EDU_LEVELS = {
+            "phd": 4, "ph.d.": 4, "doctorate": 4,
+            "master": 3, "m.s.": 3, "m.a.": 3, "m.tech": 3, "mba": 3, "mcom": 3, "msc": 3, "m.sc": 3, "ms": 3, "ma": 3,
+            "bachelor": 2, "b.s.": 2, "b.a.": 2, "b.tech": 2, "b.e.": 2, "bba": 2,
+            "bcom": 2, "bsc": 2, "b.sc": 2, "bs": 2, "ba": 2, "b.eng": 2, "beng": 2,
+        }
+
+        def _edu_level(text: str) -> int:
+            if not text:
+                return 0
+            text_lower = text.lower()
+            for word, level in sorted(EDU_LEVELS.items(), key=lambda kv: -kv[1]):
+                if _has_word(text_lower, [word]):
+                    return level
+            return 1  # some education mentioned, but not a recognized degree tier
+
+        REQUIRED_EDU_LEVELS = {"any": 0, "": 0, "high school": 1, "bachelor": 2, "master": 3, "phd": 4}
+        required_level = REQUIRED_EDU_LEVELS.get((job.required_education or "Any").strip().lower(), 0)
+        candidate_level = _edu_level(cv_result.education)
+
+        if required_level == 0:
+            # No specific requirement stated — reward the candidate's own
+            # level on an absolute scale, same as before.
+            edu_score = [0.0, 4.0, 6.0, 8.0, 10.0][candidate_level]
         else:
-            edu_score = 0.0
+            edu_gap = candidate_level - required_level
+            if edu_gap < 0:
+                edu_score = max(0.0, 8.5 + edu_gap * 3.0)  # below the bar — proportionally reduced
+            elif edu_gap == 0:
+                edu_score = 8.5  # meets the stated requirement
+            elif edu_gap == 1:
+                edu_score = 9.5  # exceeds it by one tier
+            else:
+                edu_score = 10.0  # exceeds it substantially
 
         # -- GPA (5% weight) ------------------------------------------------ #
         gpa_match_bool = cv_result.gpa >= 2.5
@@ -266,6 +317,45 @@ class SemanticMatcher:
             if best_cand is not None and best_credit > 0:
                 hits[req_skill] = (best_cand, best_credit)
         return hits
+
+    def _count_reinforcing_skills(self, all_required, cv_skills_lower) -> int:
+        """
+        For each required skill, count how many *additional* candidate skills
+        relate to it beyond the single one needed to satisfy it (e.g. knowing
+        C, C++, and Python when the job only asked for "programming" once).
+        Uses the same BERT-similarity-or-cluster test as `_semantic_skill_matches`,
+        just summing every match above the credit floor instead of keeping
+        only the best one.
+        """
+        if not all_required or not cv_skills_lower:
+            return 0
+        req_list = sorted(all_required)
+        cand_list = sorted(cv_skills_lower)
+
+        sim_matrix = None
+        if self._model is None:
+            self._load_model()
+        if self._model is not None:
+            try:
+                req_emb = self._model.encode(req_list, normalize_embeddings=True)
+                cand_emb = self._model.encode(cand_list, normalize_embeddings=True)
+                sim_matrix = cosine_similarity(req_emb, cand_emb)
+            except Exception:
+                sim_matrix = None
+
+        total_extra = 0
+        for i, req_skill in enumerate(req_list):
+            related = 0
+            for j, cand_skill in enumerate(cand_list):
+                if cand_skill == req_skill:
+                    related += 1
+                    continue
+                bert_credit = self._skill_credit(float(sim_matrix[i][j])) if sim_matrix is not None else 0.0
+                cluster_credit = CLUSTER_CREDIT if skills_in_same_cluster(req_skill, cand_skill) else 0.0
+                if max(bert_credit, cluster_credit) > 0:
+                    related += 1
+            total_extra += max(related - 1, 0)
+        return total_extra
 
     def match_cv_to_jobs(
         self,

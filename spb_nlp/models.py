@@ -33,6 +33,7 @@ class Job:
     requirements: List[str] = field(default_factory=list)
     qualifications: List[str] = field(default_factory=list)
     required_skills: List[str] = field(default_factory=list)
+    required_education: str = "Any"
     location: str = ""
     salary: str = ""
     deadline: int = 0
