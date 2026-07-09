@@ -251,12 +251,21 @@ def match_cv_to_job(request: MatchRequest):
             )
             result = _semantic_matcher.match_cv_to_job(cv_result, job)
 
-            # Override matching/missing with normalized fuzzy results
+            # matching_skills/missing_skills come straight from SemanticMatcher,
+            # which already does word-boundary-safe exact matching plus BERT +
+            # curated-cluster semantic credit. They used to be overridden here by
+            # a cruder local substring check (`rs in cs or cs in rs`) — but a
+            # plain substring check has no word boundaries, so a candidate who
+            # merely knows "C" would "match" any required skill that happens to
+            # contain the letter c anywhere (e.g. "teaching", "certification"),
+            # and because that override applied to matching_skills and
+            # missing_skills independently, the same skill could end up in both
+            # lists at once. Trust the one correct computation instead.
             return MatchResponse(
                 match_score=round(result.match_score, 1),
                 meets_threshold=result.match_score >= request.matching_threshold,
-                matching_skills=sorted(matching) if matching else sorted(result.matching_skills),
-                missing_skills=sorted(missing) if missing else sorted(result.missing_skills),
+                matching_skills=sorted(result.matching_skills),
+                missing_skills=sorted(result.missing_skills),
                 experience_match=years_exp >= 1.0,
                 gpa_match=gpa >= request.minimum_gpa,
                 semantic_similarity=result.cosine_similarity * 10.0,
@@ -265,7 +274,7 @@ def match_cv_to_job(request: MatchRequest):
                 education_score=result.education_score,
                 extra_score=result.extra_score,
                 context_score=result.context_score,
-                recommendations=result.recommendations or ([f"Consider learning: {', '.join(missing[:3])}"] if missing else []),
+                recommendations=result.recommendations or ([f"Consider learning: {', '.join(sorted(result.missing_skills)[:3])}"] if result.missing_skills else []),
                 detailed_analysis=result.detailed_analysis,
             )
         except Exception as e:
