@@ -122,9 +122,42 @@ class CVParser:
     # ------------------------------------------------------------------ #
 
     def _extract_pdf_text(self, file_path: str) -> str:
-        """Extract text from a PDF using pdfminer."""
-        from pdfminer.high_level import extract_text as pdf_extract
-        return pdf_extract(file_path)
+        """
+        Extract text from a PDF, trying pdfminer first and falling back to
+        PyPDF2 if pdfminer fails outright or returns unusably little text.
+
+        pdfminer chokes on some real-world resume PDFs — certain resume-
+        builder exports, PDFs with table-based layouts, or unusual embedded
+        fonts can make it raise or silently return almost nothing. That
+        used to propagate all the way up as an unhandled exception, which
+        turned into a hard failure for the whole upload (the frontend would
+        fall back to whatever was on the student's profile instead of the
+        CV actually being uploaded — silently, with no indication that
+        parsing had failed at all). PyPDF2 uses a different extraction
+        engine and often succeeds where pdfminer doesn't, so it's a
+        meaningful second attempt rather than a redundant one. Never raises
+        — worst case this returns an empty string, which the rest of the
+        pipeline already handles gracefully.
+        """
+        text = ""
+        try:
+            from pdfminer.high_level import extract_text as pdf_extract
+            text = pdf_extract(file_path) or ""
+        except Exception:
+            text = ""
+
+        if len(text.strip()) < 20:
+            try:
+                import PyPDF2
+                with open(file_path, "rb") as f:
+                    reader = PyPDF2.PdfReader(f)
+                    pypdf_text = "\n".join(page.extract_text() or "" for page in reader.pages)
+                if len(pypdf_text.strip()) > len(text.strip()):
+                    text = pypdf_text
+            except Exception:
+                pass  # both extractors failed — return whatever we have, possibly empty
+
+        return text
 
     def _generate_summary(
         self, name: str, skills: List[str],

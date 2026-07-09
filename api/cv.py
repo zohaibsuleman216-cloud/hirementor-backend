@@ -172,8 +172,19 @@ async def parse_cv_file(file: UploadFile = File(...)):
             try:
                 result = parser.parse_pdf(tmp_path)
                 text = result.raw_text
+            except Exception as e:
+                # PDF text extraction itself never raises (it has its own
+                # pdfminer -> PyPDF2 fallback), so a failure here means the
+                # downstream NER/regex parsing choked on the extracted text.
+                # Surface a clear error instead of a silent 500 that would
+                # otherwise leave the frontend falling back to unrelated
+                # profile data with no indication anything went wrong.
+                logger.warning("PDF parsing failed for %s: %s", file.filename, e)
+                raise HTTPException(status_code=422, detail="Could not read this PDF. Try a different export/format, or paste your resume text instead.")
             finally:
                 Path(tmp_path).unlink(missing_ok=True)
+            if not text.strip():
+                raise HTTPException(status_code=422, detail="No readable text found in this PDF (it may be a scanned image with no text layer). Try a different file, or paste your resume text instead.")
         else:
             raise HTTPException(status_code=400, detail="Unsupported file format")
     return parse_cv(CVParseRequest(text=text))
