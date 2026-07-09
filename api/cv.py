@@ -73,6 +73,7 @@ class MatchResponse(BaseModel):
     experience_score: float = 0.0
     education_score: float = 0.0
     extra_score: float = 0.0
+    context_score: float = 0.0
     recommendations: list[str] = []
     detailed_analysis: str = ""
 
@@ -263,6 +264,7 @@ def match_cv_to_job(request: MatchRequest):
                 experience_score=result.experience_score,
                 education_score=result.education_score,
                 extra_score=result.extra_score,
+                context_score=result.context_score,
                 recommendations=result.recommendations or ([f"Consider learning: {', '.join(missing[:3])}"] if missing else []),
                 detailed_analysis=result.detailed_analysis,
             )

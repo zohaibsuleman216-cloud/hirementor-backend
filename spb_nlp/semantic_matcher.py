@@ -207,6 +207,7 @@ class SemanticMatcher:
             experience_score=round(exp_score, 2),
             education_score=round(edu_score, 2),
             extra_score=round(gpa_score, 2),  # field name kept for API compatibility — now holds the GPA sub-score
+            context_score=round(bert_score, 2),
             detailed_analysis=(
                 f"Skills: {skill_score:.0f}/60 | Exp: {exp_score:.0f}/15 | "
                 f"Edu: {edu_score:.0f}/10 | Semantic(BERT): {bert_score:.0f}/10 | "

@@ -76,6 +76,7 @@ class MatchResult:
     experience_score: float = 0.0
     education_score: float = 0.0
     extra_score: float = 0.0
+    context_score: float = 0.0
 
 
 @dataclass
