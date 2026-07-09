@@ -104,7 +104,25 @@ class SemanticMatcher:
         implied_skills = {s.lower().strip() for s in extract_skills(implied_text)}
         all_required = job_skills_lower | implied_skills
 
-        exact_hits = cv_skills_lower & all_required
+        # A required skill counts as an exact hit if it's either in the
+        # candidate's extracted skill set (limited to the curated
+        # SKILL_KEYWORDS vocabulary) OR literally present as a standalone
+        # word/phrase anywhere in their resume text. The extracted-set path
+        # alone means a required skill that simply isn't in that finite list
+        # (e.g. a generic word like "programming") could only ever earn a
+        # probabilistic BERT/cluster inference instead of the direct credit
+        # it's actually earned when the CV states it in plain words —
+        # keeping the system from being fully dependent on vocabulary
+        # coverage for company-typed required skills specifically.
+        cv_full_text_lower = ((cv_result.raw_text or "") + " " + cv_experience_text).lower()
+
+        def _text_has_skill(text: str, skill: str) -> bool:
+            if not text or not skill:
+                return False
+            return bool(re.search(r'(?<!\w)' + re.escape(skill) + r'(?!\w)', text))
+
+        literal_hits = {req for req in all_required if _text_has_skill(cv_full_text_lower, req)}
+        exact_hits = (cv_skills_lower & all_required) | literal_hits
         semantic_hits = {}  # required_skill -> (best_candidate_skill, similarity)
         remaining = all_required - exact_hits
         if remaining and cv_skills_lower:
@@ -129,7 +147,7 @@ class SemanticMatcher:
 
         # For the API-facing report, only surface skills against the company's
         # explicit required_skills list (implied_skills are an internal scoring aid).
-        matching_skills = sorted((cv_skills_lower & job_skills_lower) | (set(semantic_hits) & job_skills_lower))
+        matching_skills = sorted((cv_skills_lower & job_skills_lower) | (set(semantic_hits) & job_skills_lower) | (literal_hits & job_skills_lower))
         missing_skills = sorted(job_skills_lower - set(matching_skills))
 
         # -- Holistic CV-vs-job context similarity via BERT (10%) ------------- #

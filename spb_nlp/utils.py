@@ -6,6 +6,7 @@ from typing import List, Set
 
 SKILL_KEYWORDS: Set[str] = {
     # Programming Languages
+    "programming", "coding", "software development", "software engineering",
     "python", "java", "kotlin", "javascript", "typescript", "c++", "c#", "c",
     "golang", "go", "rust", "swift", "php", "ruby", "scala", "r", "matlab",
     "dart", "html", "css", "sass", "less",
@@ -374,16 +375,35 @@ def extract_name(text: str) -> str:
     return candidate
 
 
+_WORD_TO_NUM = {
+    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+    "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
+}
+
+
 def estimate_years_of_experience(text: str) -> float:
+    text_lower = text.lower()
     patterns = [
-        r'(\d+)\+?\s*years?\s*(?:of\s+)?experience',
-        r'experience\s*(?:of\s+)?(\d+)\+?\s*years?',
-        r'(\d+)\+?\s*years?\s+experience',
-        r'(\d+)\+?\s*years?\s+(?:building|working|in|as|of)',
+        # "3-5 years" / "3 to 5 years" — take the lower bound, which is what
+        # a stated range's *minimum* actually means for a requirement.
+        r'(\d+)\s*(?:-|to)\s*\d+\+?\s*(?:years?|yrs?)',
+        r'(\d+)\+?\s*(?:years?|yrs?)\s*(?:of\s+)?experience',
+        r'experience\s*(?:of\s+)?(\d+)\+?\s*(?:years?|yrs?)',
+        r'(\d+)\+?\s*(?:years?|yrs?)\s+experience',
+        # Covers "N years of <adjective> experience" too (e.g. "2 years of
+        # relevant experience") since it doesn't require "experience" to
+        # immediately follow — just one of these connector words.
+        r'(\d+)\+?\s*(?:years?|yrs?)\s+(?:building|working|in|as|of)',
+        r'(\d+)\+?\s*(?:years?|yrs?)[\'’]?\s+experience',
     ]
     years = []
     for p in patterns:
-        years.extend([float(m) for m in re.findall(p, text.lower())])
+        years.extend([float(m) for m in re.findall(p, text_lower)])
+
+    # Word-number fallback: "two years of experience", "minimum three years".
+    word_pattern = r'\b(' + '|'.join(_WORD_TO_NUM.keys()) + r')\s*(?:years?|yrs?)\b'
+    years.extend([float(_WORD_TO_NUM[w]) for w in re.findall(word_pattern, text_lower)])
+
     if years:
         return max(years)
     # Fallback: estimate from year ranges (prefer non-education lines)
