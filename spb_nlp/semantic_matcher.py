@@ -220,6 +220,7 @@ class SemanticMatcher:
         REQUIRED_EDU_LEVELS = {"any": 0, "": 0, "high school": 1, "bachelor": 2, "master": 3, "phd": 4}
         required_level = REQUIRED_EDU_LEVELS.get((job.required_education or "Any").strip().lower(), 0)
         candidate_level = _edu_level(cv_result.education)
+        education_match_bool = candidate_level >= required_level
 
         if required_level == 0:
             # No specific requirement stated — reward the candidate's own
@@ -295,6 +296,7 @@ class SemanticMatcher:
             missing_skills=missing_skills,
             experience_match=cv_result.years_of_experience >= 1.0,
             gpa_match=gpa_match_bool,
+            education_match=education_match_bool,
             cosine_similarity=round(cos_sim, 4),
             recommendations=recs,
             skill_score=round(skill_score, 2),

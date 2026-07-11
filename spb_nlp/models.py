@@ -71,6 +71,7 @@ class MatchResult:
     missing_skills: List[str] = field(default_factory=list)
     experience_match: bool = False
     gpa_match: bool = False
+    education_match: bool = False
     cosine_similarity: float = 0.0
     recommendations: List[str] = field(default_factory=list)
     detailed_analysis: str = ""

@@ -69,6 +69,7 @@ class MatchResponse(BaseModel):
     missing_skills: list[str] = []
     experience_match: bool = False
     gpa_match: bool = False
+    education_match: bool = False
     semantic_similarity: float = 0.0
     skill_score: float = 0.0
     experience_score: float = 0.0
@@ -283,6 +284,7 @@ def match_cv_to_job(request: MatchRequest):
                 missing_skills=sorted(result.missing_skills),
                 experience_match=years_exp >= 1.0,
                 gpa_match=gpa >= request.minimum_gpa,
+                education_match=result.education_match,
                 semantic_similarity=result.cosine_similarity * 10.0,
                 skill_score=result.skill_score,
                 experience_score=result.experience_score,
@@ -311,6 +313,7 @@ def match_cv_to_job(request: MatchRequest):
         missing_skills=sorted(missing),
         experience_match=years_exp >= 1.0,
         gpa_match=gpa >= request.minimum_gpa,
+        education_match=(request.required_education or "Any").strip().lower() in ("any", "") or bool(edu_text),
         semantic_similarity=semantic,
         skill_score=round(skill_score, 1),
         experience_score=exp_score,
