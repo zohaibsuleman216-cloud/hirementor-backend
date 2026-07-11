@@ -313,9 +313,15 @@ def extract_education(text: str) -> str:
     # No "Education" section header found at all (or it was empty) — fall
     # back to scanning the raw text directly for a degree phrase, so resumes
     # that mention a degree without a formal section header still register.
+    # (?<!\w) on the left is essential here — without it, short abbreviations
+    # like "m.a." (matched as bare "ma" once the optional periods don't
+    # apply) would match as a substring *inside* an unrelated word, e.g.
+    # "diploMA" or "infor-MAtion", falsely detecting a Master's degree.
     degree_pattern = (
-        r'((?:bachelor|master|ph\.?d\.?|doctorate|b\.?s\.?c?\.?|b\.?a\.?|'
-        r'b\.?tech|b\.?e\.?|m\.?s\.?c?\.?|m\.?a\.?|m\.?tech|mba)[^.,;\n]{0,60})'
+        r'(?<!\w)((?:bachelor|master|ph\.?d\.?|doctorate|b\.?s\.?c?\.?|b\.?a\.?|'
+        r'b\.?tech|b\.?e\.?|m\.?s\.?c?\.?|m\.?a\.?|m\.?tech|mba|'
+        r'high\s?school|secondary\s+school|matriculation|matric|hssc|diploma)'
+        r'(?!\w)[^.,;\n]{0,60})'
     )
     match = re.search(degree_pattern, text, re.IGNORECASE)
     return match.group(1).strip() if match else ""

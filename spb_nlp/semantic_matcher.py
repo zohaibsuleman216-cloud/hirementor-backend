@@ -206,6 +206,9 @@ class SemanticMatcher:
             "master": 3, "m.s.": 3, "m.a.": 3, "m.tech": 3, "mba": 3, "mcom": 3, "msc": 3, "m.sc": 3, "ms": 3, "ma": 3,
             "bachelor": 2, "b.s.": 2, "b.a.": 2, "b.tech": 2, "b.e.": 2, "bba": 2,
             "bcom": 2, "bsc": 2, "b.sc": 2, "bs": 2, "ba": 2, "b.eng": 2, "beng": 2,
+            "high school": 1, "highschool": 1, "secondary school": 1, "intermediate": 1,
+            "hssc": 1, "matric": 1, "matriculation": 1, "a-level": 1, "a level": 1,
+            "diploma": 1, "associate degree": 1,
         }
 
         def _edu_level(text: str) -> int:
