@@ -180,15 +180,22 @@ class SemanticMatcher:
             else:
                 exp_score = 3.0  # baseline — "no experience yet" is the norm, not a penalty
         else:
-            gap = yr - required_years
-            if gap < 0:
-                exp_score = max(3.0, 12.75 * (yr / required_years))
-            elif gap == 0:
-                exp_score = 12.75  # meets the stated requirement exactly
-            elif gap < required_years:
-                exp_score = 14.0  # exceeds it, but by less than double
+            # A stated requirement is a floor, not a ceiling — meeting it
+            # earns a strong 80% baseline (never harshly penalized for
+            # "just" meeting what was asked), and the remaining 20% scales
+            # with how far *past* it the candidate is, up to a reasonable
+            # excess (one more full requirement's-worth of years), so two
+            # candidates who both clear the bar — e.g. 3 vs 4 years against
+            # a 2-year requirement — still rank differently instead of
+            # tying at a flat "full marks". Falling short scales down
+            # proportionally instead of cliff-dropping to zero.
+            if yr >= required_years:
+                excess = yr - required_years
+                bonus_range = max(required_years, 2.0)
+                bonus_ratio = min(excess / bonus_range, 1.0)
+                exp_score = 15.0 * (0.8 + 0.2 * bonus_ratio)
             else:
-                exp_score = 15.0  # exceeds it substantially
+                exp_score = max(3.0, 15.0 * (yr / required_years))
 
         # -- Education (10% weight) --------------------------------------- #
         def _has_word(text: str, words) -> bool:
@@ -219,28 +226,46 @@ class SemanticMatcher:
             # level on an absolute scale, same as before.
             edu_score = [0.0, 4.0, 6.0, 8.0, 10.0][candidate_level]
         else:
-            edu_gap = candidate_level - required_level
-            if edu_gap < 0:
-                edu_score = max(0.0, 8.5 + edu_gap * 3.0)  # below the bar — proportionally reduced
-            elif edu_gap == 0:
-                edu_score = 8.5  # meets the stated requirement
-            elif edu_gap == 1:
-                edu_score = 9.5  # exceeds it by one tier
+            # Same 80%-baseline-plus-proportional-bonus rule as Experience:
+            # meeting "Bachelor minimum" earns a strong baseline, and each
+            # degree tier above it (Master, PhD) earns a further slice of
+            # the remaining 20%, so a Bachelor's and a PhD candidate against
+            # the same "Bachelor minimum" job don't tie.
+            if candidate_level >= required_level:
+                excess_levels = candidate_level - required_level
+                bonus_ratio = min(excess_levels / 2.0, 1.0)
+                edu_score = 10.0 * (0.8 + 0.2 * bonus_ratio)
             else:
-                edu_score = 10.0  # exceeds it substantially
+                edu_score = max(0.0, 10.0 * (candidate_level / required_level))
 
         # -- GPA (5% weight) ------------------------------------------------ #
         gpa_match_bool = cv_result.gpa >= 2.5
-        if cv_result.gpa >= 3.5:
-            gpa_score = 5.0
-        elif cv_result.gpa >= 3.0:
-            gpa_score = 3.5
-        elif cv_result.gpa >= 2.5:
-            gpa_score = 2.0
-        elif cv_result.gpa > 0:
-            gpa_score = 1.0
+        required_gpa = job.minimum_gpa or 0.0
+        if required_gpa <= 0:
+            # No minimum stated — reward the candidate's own GPA on an
+            # absolute scale, same as before.
+            if cv_result.gpa >= 3.5:
+                gpa_score = 5.0
+            elif cv_result.gpa >= 3.0:
+                gpa_score = 3.5
+            elif cv_result.gpa >= 2.5:
+                gpa_score = 2.0
+            elif cv_result.gpa > 0:
+                gpa_score = 1.0
+            else:
+                gpa_score = 0.0
         else:
-            gpa_score = 0.0  # not reported — no credit, no penalty
+            # Same 80%-baseline-plus-proportional-bonus rule: meeting the
+            # stated minimum GPA earns a strong baseline, and the remaining
+            # room up to a 4.0 scale earns a proportional bonus — so 3.4 and
+            # 3.6 against a 3.0 minimum both score well but don't tie.
+            if cv_result.gpa >= required_gpa:
+                excess = cv_result.gpa - required_gpa
+                bonus_range = max(4.0 - required_gpa, 0.5)
+                bonus_ratio = min(excess / bonus_range, 1.0)
+                gpa_score = 5.0 * (0.8 + 0.2 * bonus_ratio)
+            else:
+                gpa_score = max(0.0, 5.0 * (cv_result.gpa / required_gpa)) if cv_result.gpa > 0 else 0.0
 
         recs = []
         if semantic_hits:

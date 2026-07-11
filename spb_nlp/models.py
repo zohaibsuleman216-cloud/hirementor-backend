@@ -34,6 +34,7 @@ class Job:
     qualifications: List[str] = field(default_factory=list)
     required_skills: List[str] = field(default_factory=list)
     required_education: str = "Any"
+    minimum_gpa: float = 0.0
     location: str = ""
     salary: str = ""
     deadline: int = 0

@@ -261,6 +261,7 @@ def match_cv_to_job(request: MatchRequest):
                 requirements=request.job_requirements,
                 required_skills=request.required_skills,
                 required_education=request.required_education,
+                minimum_gpa=request.minimum_gpa,
                 matching_threshold=request.matching_threshold,
             )
             result = _semantic_matcher.match_cv_to_job(cv_result, job)
