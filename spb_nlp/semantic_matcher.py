@@ -164,10 +164,21 @@ class SemanticMatcher:
         # once a job *does* say e.g. "2+ years", meeting that bar is worth
         # more than merely having "some" experience, and exceeding it earns a
         # capped bonus rather than an unbounded reward for raw years.
-        required_years = estimate_years_of_experience(
+        # A stated minimum is only a hard requirement when the company
+        # explicitly sets it (job.minimum_experience_years, a structured
+        # field — same pattern as minimum_gpa/required_education). Free text
+        # like "2 years experience in teaching" inside the description or
+        # requirements list still *informs the score* (so weighting stays
+        # smart for jobs posted before this field existed), but it never by
+        # itself causes an auto-reject — a prose mention is too easy to
+        # false-positive on to gate an application on it.
+        explicit_min_years = job.minimum_experience_years or 0.0
+        implied_required_years = estimate_years_of_experience(
             " ".join([job.description or ""] + list(job.requirements))
         )
+        required_years = explicit_min_years if explicit_min_years > 0 else implied_required_years
         yr = cv_result.years_of_experience
+        experience_match_bool = True if explicit_min_years <= 0 else (yr >= explicit_min_years)
         if required_years <= 0:
             if yr >= 5.0:
                 exp_score = 15.0
@@ -243,8 +254,8 @@ class SemanticMatcher:
                 edu_score = max(0.0, 10.0 * (candidate_level / required_level))
 
         # -- GPA (5% weight) ------------------------------------------------ #
-        gpa_match_bool = cv_result.gpa >= 2.5
         required_gpa = job.minimum_gpa or 0.0
+        gpa_match_bool = True if required_gpa <= 0 else (cv_result.gpa >= required_gpa)
         if required_gpa <= 0:
             # No minimum stated — reward the candidate's own GPA on an
             # absolute scale, same as before.
@@ -297,7 +308,7 @@ class SemanticMatcher:
             meets_threshold=total >= threshold,
             matching_skills=matching_skills,
             missing_skills=missing_skills,
-            experience_match=cv_result.years_of_experience >= 1.0,
+            experience_match=experience_match_bool,
             gpa_match=gpa_match_bool,
             education_match=education_match_bool,
             cosine_similarity=round(cos_sim, 4),
