@@ -53,6 +53,7 @@ class MatchRequest(BaseModel):
     required_skills: list[str] = []
     required_education: str = "Any"
     minimum_gpa: float = 0.0
+    minimum_experience_years: float = 0.0
     matching_threshold: float = DEFAULT_MATCH_THRESHOLD
     candidate_skills: list[str] | None = None
     candidate_years_experience: float | None = None
@@ -263,6 +264,7 @@ def match_cv_to_job(request: MatchRequest):
                 required_skills=request.required_skills,
                 required_education=request.required_education,
                 minimum_gpa=request.minimum_gpa,
+                minimum_experience_years=request.minimum_experience_years,
                 matching_threshold=request.matching_threshold,
             )
             result = _semantic_matcher.match_cv_to_job(cv_result, job)
@@ -282,7 +284,7 @@ def match_cv_to_job(request: MatchRequest):
                 meets_threshold=result.match_score >= request.matching_threshold,
                 matching_skills=sorted(result.matching_skills),
                 missing_skills=sorted(result.missing_skills),
-                experience_match=years_exp >= 1.0,
+                experience_match=result.experience_match,
                 gpa_match=gpa >= request.minimum_gpa,
                 education_match=result.education_match,
                 semantic_similarity=result.cosine_similarity * 10.0,
@@ -311,7 +313,7 @@ def match_cv_to_job(request: MatchRequest):
         meets_threshold=total >= request.matching_threshold,
         matching_skills=sorted(matching),
         missing_skills=sorted(missing),
-        experience_match=years_exp >= 1.0,
+        experience_match=(request.minimum_experience_years <= 0) or (years_exp >= request.minimum_experience_years),
         gpa_match=gpa >= request.minimum_gpa,
         education_match=(request.required_education or "Any").strip().lower() in ("any", "") or bool(edu_text),
         semantic_similarity=semantic,
